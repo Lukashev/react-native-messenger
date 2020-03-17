@@ -3,14 +3,15 @@ import { TouchableOpacity, ActivityIndicator } from 'react-native'
 import styled from 'styled-components'
 import { objectOf, any, bool } from 'prop-types'
 import Typography from './Typography'
+import { colors } from '../theme'
 
 const Container = styled(TouchableOpacity)`
     width: 140px;
     height: 55px;
     justify-content: center;
     align-items: center;
-    background-color: #42D67D;
-    border: 2px solid #FFFFFF;
+    background-color: ${colors['primary']};
+    border: 2px solid ${colors['secondary']};
     border-radius: 10px;
     text-transform: uppercase;
 `

@@ -5,10 +5,13 @@ import AppStore from './src/store';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as Font from 'expo-font';
-
+import Typography from './src/components/Typography';
 /* SCREENS */
 import Login from './src/screens/Login';
-import Typography from './src/components/Typography';
+import SignUp from './src/screens/SignUp';
+import PasswordRecovery from './src/screens/PasswordRecovery';
+import { colors } from './src/theme';
+
 
 const store = createStore(AppStore)
 const Stack = createStackNavigator();
@@ -16,7 +19,6 @@ const Stack = createStackNavigator();
 const headerTitleStyle = {
   textTransform: 'uppercase',
   fontFamily: 'montserrat-bold',
-  fontSize: 24,
   color: '#fff'
 };
 
@@ -36,13 +38,24 @@ export default function App() {
         <Stack.Navigator screenOptions={{
           headerTitle: ({ children }) => <Typography style={headerTitleStyle}>{children}</Typography>,
           headerStyle: {
-            backgroundColor: '#42D67D'
-          }
+            backgroundColor: '#42D67D',
+          },
+          headerBackTitleVisible: false,
+          headerTintColor: colors['secondary'],
+          headerLeftContainerStyle: { paddingLeft: 10 }
         }}
         >
           <Stack.Screen
             name="Login"
             component={Login}
+          />
+          <Stack.Screen
+            name="Sign Up"
+            component={SignUp}
+          />
+          <Stack.Screen
+            name="Password Recovery"
+            component={PasswordRecovery}
           />
         </Stack.Navigator>
       </NavigationContainer>

@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import Typography from './Typography'
 import EyeIcon from '../icons/EyeIcon'
 import HiddenEyeIcon from '../icons/HiddenEyeIcon'
+import { colors } from '../theme'
 
 const Container = styled(View)`
     flex-direction: column;
@@ -12,13 +13,13 @@ const Container = styled(View)`
 `
 
 const Label = styled(Typography)`
-    color: #42D67D;
+    color: ${colors['primary']};
     margin: 8px 0;
 `
 
 const StyledTextInput = styled(TextInput)`
     background: #FFFFFF;
-    border: 2px solid #42D67D;
+    border: 2px solid ${colors['primary']};
     border-radius: 10px;
     height: 40px;
     padding: 0 15px;

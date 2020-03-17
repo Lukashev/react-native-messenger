@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text } from 'react-native'
 
-class Register extends Component {
+class SignUp extends Component {
     render() {
         return (
             <View>
@@ -11,4 +11,4 @@ class Register extends Component {
     }
 }
 
-export default Register
+export default SignUp
