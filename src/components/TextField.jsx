@@ -1,11 +1,14 @@
-import React from 'react'
-import { string, objectOf, any } from 'prop-types'
-import { TextInput, View } from 'react-native'
+import React, { useState, useMemo, useCallback } from 'react'
+import { string, objectOf, any, bool, func } from 'prop-types'
+import { TextInput, View, TouchableOpacity } from 'react-native'
 import styled from 'styled-components'
 import Typography from './Typography'
+import EyeIcon from '../icons/EyeIcon'
+import HiddenEyeIcon from '../icons/HiddenEyeIcon'
 
 const Container = styled(View)`
-    flex-direction: column
+    flex-direction: column;
+    position: relative;
 `
 
 const Label = styled(Typography)`
@@ -21,13 +24,34 @@ const StyledTextInput = styled(TextInput)`
     padding: 0 15px;
 `
 
+const TouchableEye = styled(TouchableOpacity)`
+    position: absolute;
+    right: 10px;
+    top: 40px;
+` 
+
 const TextField = (props) => {
+
+    const [secureTextEntry, setSecureTextEntry] = useState(true)
+    const { secureEnabled } = props 
+
+    const changeSecureTextState = useCallback(() => setSecureTextEntry(!!!secureTextEntry), [secureTextEntry])
+
+    const eyeIcon = useMemo(() => {
+        return secureEnabled 
+        ? <TouchableEye onPress={changeSecureTextState} s>
+            {secureTextEntry ? <HiddenEyeIcon />  : <EyeIcon /> } 
+        </TouchableEye>
+        : null
+    }, [secureTextEntry])
+
     const {
         label = 'Test',
         value = '0',
         style,
         inputStyle,
-        labelStyle
+        labelStyle,
+        onChangeText = () => {}
     } = props
     return (
         <Container style={style}>
@@ -35,7 +59,10 @@ const TextField = (props) => {
             <StyledTextInput
                 style={inputStyle}
                 value={value}
+                secureTextEntry={secureEnabled ? secureTextEntry : false}
+                onChangeText={onChangeText}
             />
+            {eyeIcon}
         </Container>
     )
 }
@@ -43,13 +70,16 @@ const TextField = (props) => {
 TextField.propTypes = {
     label: string.isRequired,
     value: string.isRequired,
+    onChangeText: func.isRequired, 
     inputStyle: objectOf(any),
-    labelStyle: objectOf(any)
+    labelStyle: objectOf(any),
+    secureEnabled: bool
 }
 
 TextField.defaultProps = {
     inputStyle: {},
-    labelStyle: {}
+    labelStyle: {},
+    secureEnabled: false
 }
 
 export default TextField
