@@ -1,19 +1,21 @@
 const INITIAL_STATE = {
-    email: '',
-    password: '',
-    retypedPassword: '',
-    rememberMe: false
-}
+  email: '',
+  password: '',
+  retypedPassword: '',
+  rememberMe: false,
+  recoveryLinkSent: false,
+  activationCode: '',
+  activationCodeSent: false
+};
 
 export const authReducer = (state = INITIAL_STATE, action) => {
-    switch (action.type) {
-        case 'CHANGE_AUTH_STATE':
-            return {
-                ...state,
-                ...action.payload,
-            }
-        default:
-            return state
-    }
-}
-
+  switch (action.type) {
+    case 'CHANGE_AUTH_STATE':
+      return {
+        ...state,
+        ...action.payload,
+      };
+    default:
+      return state;
+  }
+};

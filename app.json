@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Messenger Tutorial",
+    "name": "React Native Messenger",
     "slug": "react-native-messenger",
     "privacy": "public",
     "sdkVersion": "36.0.0",

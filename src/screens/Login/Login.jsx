@@ -7,9 +7,9 @@ import Button from '../../components/Button'
 import { Switch } from 'react-native-gesture-handler'
 import Typography from '../../components/Typography'
 import { colors } from '../../theme'
-import { redirect } from '../../utils'
+import { redirect, changeAuthState } from '../../utils'
 
-const Container = styled(KeyboardAvoidingView)`
+export const Container = styled(KeyboardAvoidingView)`
     flex: 1;
     flex-direction: column;
     justify-content: center;
@@ -17,7 +17,7 @@ const Container = styled(KeyboardAvoidingView)`
     background-color: ${colors['background']};
     padding: 0 20px;
 `
-const FormContainer = styled(View)`
+export const FormContainer = styled(View)`
     align-self: stretch;
 `
 const SwitchContainer = styled(View)`
@@ -32,10 +32,10 @@ const SwitchText = styled(Typography)`
 `
 
 const StyledTextField = styled(TextField)`
-    margin: 12px 0 0 0;
+    margin: 8px 0 0 0;
 `
 
-const StyledButton = styled(Button)`
+export const StyledButton = styled(Button)`
     width: 140px;
     align-self: center;
     margin: 20px 0;
@@ -50,24 +50,18 @@ const Link = styled(Typography)`
     padding: 8px 0;
 `
 
+export const StyledButtonTypo = styled(Typography)`
+    color: ${colors['secondary']};
+    text-transform: uppercase;
+`
+
 const styles = StyleSheet.create({
-    buttonTypoStyle: {
-        textTransform: 'uppercase',
-        color: 'white',
-    },
-    emailInputLabel: {
-        marginTop: 0
-    }
+    emailInputLabel: { marginTop: 0 }
 })
 
 class Login extends Component {
 
-    changeAuthState = key => value => {
-        const { changeAuthState } = this.props
-        changeAuthState({ [key]: value })
-    }
-
-    navigateTo
+    onSubmit = () => {}
 
     render() {
         const { Auth: { email, password, rememberMe }, navigation } = this.props
@@ -78,19 +72,21 @@ class Login extends Component {
                         label={'Email'}
                         value={email}
                         labelStyle={styles.emailInputLabel}
-                        onChangeText={this.changeAuthState('email')}
+                        onChangeText={changeAuthState('email', this)}
                     />
                     <StyledTextField
                         label={'Password'}
                         value={password}
                         secureEnabled
-                        onChangeText={this.changeAuthState('password')}
+                        onChangeText={changeAuthState('password', this)}
                     />
                     <SwitchContainer>
-                        <Switch value={rememberMe} onValueChange={this.changeAuthState('rememberMe')} />
+                        <Switch value={rememberMe} onValueChange={changeAuthState('rememberMe', this)} />
                         <SwitchText>Remember me</SwitchText>
                     </SwitchContainer>
-                    <StyledButton typoStyle={styles.buttonTypoStyle}>Submit</StyledButton>
+                    <StyledButton onPress={this.onSubmit}>
+                        <StyledButtonTypo>Submit</StyledButtonTypo>
+                    </StyledButton>
                     <Link onPress={redirect('Password Recovery', navigation)}>
                         Forgot password?
                     </Link>

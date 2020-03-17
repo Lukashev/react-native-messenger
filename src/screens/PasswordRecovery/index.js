@@ -1,3 +1,10 @@
-import PasswordRecovery from "./PasswordRecovery";
+import PasswordRecovery from './PasswordRecovery';
+import { connect } from 'react-redux'
+import { changeStoreState } from '../../store';
 
-export default PasswordRecovery
+const mapStateToProps = ({ Auth }) => ({ Auth });
+const mapDispatchToProps = (dispatch) => ({
+  changeAuthState: (payload) => dispatch(changeStoreState('CHANGE_AUTH_STATE', payload))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(PasswordRecovery);

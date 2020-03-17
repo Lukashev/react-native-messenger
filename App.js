@@ -1,19 +1,20 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import AppStore from './src/store';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as Font from 'expo-font';
+import AppStore from './src/store';
 import Typography from './src/components/Typography';
 /* SCREENS */
 import Login from './src/screens/Login';
 import SignUp from './src/screens/SignUp';
 import PasswordRecovery from './src/screens/PasswordRecovery';
 import { colors } from './src/theme';
+import AccountActivation from './src/screens/AccountActivation';
 
 
-const store = createStore(AppStore)
+const store = createStore(AppStore);
 const Stack = createStackNavigator();
 
 const headerTitleStyle = {
@@ -41,7 +42,7 @@ export default function App() {
             backgroundColor: '#42D67D',
           },
           headerBackTitleVisible: false,
-          headerTintColor: colors['secondary'],
+          headerTintColor: colors.secondary,
           headerLeftContainerStyle: { paddingLeft: 10 }
         }}
         >
@@ -56,6 +57,10 @@ export default function App() {
           <Stack.Screen
             name="Password Recovery"
             component={PasswordRecovery}
+          />
+          <Stack.Screen
+            name="Account Activation"
+            component={AccountActivation}
           />
         </Stack.Navigator>
       </NavigationContainer>

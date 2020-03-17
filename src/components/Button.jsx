@@ -1,7 +1,7 @@
 import React from 'react'
 import { TouchableOpacity, ActivityIndicator } from 'react-native'
 import styled from 'styled-components'
-import { objectOf, any, bool } from 'prop-types'
+import { objectOf, any, bool, func } from 'prop-types'
 import Typography from './Typography'
 import { colors } from '../theme'
 
@@ -17,9 +17,9 @@ const Container = styled(TouchableOpacity)`
 `
 
 const Button = (props) => {
-    const { children, typoStyle, style, showIndicator } = props
+    const { children, typoStyle, style, showIndicator, onPress } = props
     return (
-        <Container style={style}>
+        <Container style={style} onPress={onPress}>
             {!showIndicator
                 ? <Typography style={typoStyle}>{children}</Typography>
                 : <ActivityIndicator size='large' color='white' />
@@ -30,12 +30,14 @@ const Button = (props) => {
 
 Button.propTypes = {
     typoStyle: objectOf(any),
-    showIndicator: bool
+    showIndicator: bool,
+    onPress: func
 }
 
 Button.defaultProps = {
     typoStyle: {},
-    showIndicator: false
+    showIndicator: false,
+    onPress: () => {}
 }
 
 export default Button
