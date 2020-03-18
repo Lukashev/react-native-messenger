@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import thunk from 'redux-thunk'
+import { createStore, applyMiddleware } from 'redux';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as Font from 'expo-font';
@@ -14,7 +15,10 @@ import { colors } from './src/theme';
 import AccountActivation from './src/screens/AccountActivation';
 
 
-const store = createStore(AppStore);
+const store = createStore(
+  AppStore,
+  applyMiddleware(thunk)
+);
 const Stack = createStackNavigator();
 
 const headerTitleStyle = {
@@ -37,7 +41,9 @@ export default function App() {
     <Provider store={store}>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{
-          headerTitle: ({ children }) => <Typography style={headerTitleStyle}>{children}</Typography>,
+          headerTitle: ({ children }) => (
+              <Typography style={headerTitleStyle}>{children}</Typography>
+          ),
           headerStyle: {
             backgroundColor: '#42D67D',
           },

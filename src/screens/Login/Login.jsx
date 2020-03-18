@@ -56,47 +56,57 @@ export const StyledButtonTypo = styled(Typography)`
 `
 
 const styles = StyleSheet.create({
-    emailInputLabel: { marginTop: 0 }
+	emailInputLabel: { marginTop: 0 }
 })
 
 class Login extends Component {
 
-    onSubmit = () => {}
+	constructor(props) {
+		super(props)
+		this.state = { showIndicator: false }
+	}
 
-    render() {
-        const { Auth: { email, password, rememberMe }, navigation } = this.props
-        return (
-            <Container behavior="padding" enabled>
-                <FormContainer>
-                    <TextField
-                        label={'Email'}
-                        value={email}
-                        labelStyle={styles.emailInputLabel}
-                        onChangeText={changeAuthState('email', this)}
-                    />
-                    <StyledTextField
-                        label={'Password'}
-                        value={password}
-                        secureEnabled
-                        onChangeText={changeAuthState('password', this)}
-                    />
-                    <SwitchContainer>
-                        <Switch value={rememberMe} onValueChange={changeAuthState('rememberMe', this)} />
-                        <SwitchText>Remember me</SwitchText>
-                    </SwitchContainer>
-                    <StyledButton onPress={this.onSubmit}>
-                        <StyledButtonTypo>Submit</StyledButtonTypo>
-                    </StyledButton>
-                    <Link onPress={redirect('Password Recovery', navigation)}>
-                        Forgot password?
+	onSubmit = async () => {
+		this.setState(state => ({ ...state, showIndicator: true }))
+		await this.props.submit()
+		this.setState(state => ({ ...state, showIndicator: false }))	
+	}
+
+	render() {
+		const { showIndicator } = this.state
+		const { Auth: { email, password, rememberMe }, navigation } = this.props
+		return (
+			<Container behavior="padding" enabled>
+				<FormContainer>
+					<TextField
+						label={'Email'}
+						value={email}
+						labelStyle={styles.emailInputLabel}
+						onChangeText={changeAuthState('email', this)}
+					/>
+					<StyledTextField
+						label={'Password'}
+						value={password}
+						secureEnabled
+						onChangeText={changeAuthState('password', this)}
+					/>
+					<SwitchContainer>
+						<Switch value={rememberMe} onValueChange={changeAuthState('rememberMe', this)} />
+						<SwitchText>Remember me</SwitchText>
+					</SwitchContainer>
+					<StyledButton onPress={this.onSubmit} showIndicator={showIndicator}>
+						<StyledButtonTypo>Submit</StyledButtonTypo>
+					</StyledButton>
+					<Link onPress={redirect('Password Recovery', navigation)}>
+						Forgot password?
                     </Link>
-                    <Link onPress={redirect('Sign Up', navigation)}>
-                        Tap to sign up
+					<Link onPress={redirect('Sign Up', navigation)}>
+						Tap to sign up
                     </Link>
-                </FormContainer>
-            </Container>
-        )
-    }
+				</FormContainer>
+			</Container>
+		)
+	}
 }
 
 export default Login
