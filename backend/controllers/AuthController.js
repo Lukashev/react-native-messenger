@@ -19,9 +19,11 @@ router.post('/login', async (req, res) => {
   try {
     const user = await User.findOne({ email });
 
-    if (!user) return res.status(404).send({ token: null, message: 'User not found' });
+    if (!user) return res.status(400).send({ token: null, message: 'User not found' });
+    if (!user.isActivated) return res.status(400).send({ token: null, message: 'Account is not activated' });
+
     const passwordIsValid = bcrypt.compareSync(password, user.password);
-    if (!passwordIsValid) return res.status(401).send({ token: null, message: 'Invalid password' });
+    if (!passwordIsValid) return res.status(400).send({ token: null, message: 'Invalid password' });
 
     const token = jwt.sign({ id: user._id }, config.JWT_SECRET, {
       expiresIn: rememberMe ? 86400 * 30 : 86400
@@ -48,18 +50,45 @@ router.post('/signup', async (req, res) => {
 
     return res.status(200).send({ result: true, message: 'You are successfully registered' });
   } catch (e) {
-    res.status(400).send({ result: null, message: e.message });
+    res.status(500).send({ result: null, message: e.message });
   }
 });
+
+router.post('/account_activation', async (req, res) => {
+  const { email, activationCode } = req.body
+  try {
+    const user = await User.findOneAndUpdate({
+      email,
+      activationCode
+    }, { isActivated: true })
+    if (!user) return res.status(400).send({ result: null, message: 'User not found' })
+    if (user.isActivated) return res.status(400).send({ result: null, message: 'This account is already activated' })
+    return res.status(200).send({ result: true, message: 'You have successfully activated your account' })
+  } catch (e) {
+    res.status(500).send({ result: null, message: e.message })
+  }
+})
+
+router.get('/account_activation', async (req, res) => {
+  const { email } = req.body
+  try {
+    const user = await User.findOne({ email })
+    if (!user) return res.status(400).send({ result: null, message: 'User not found' })
+    await sendActivationCode(user)
+    return res.status(200).send({ result: true, message: 'Activation code sent to your mail' })
+  } catch (e) {
+    res.status(500).send({ result: null, message: e.message })
+  }
+})
 
 router.get('/me', verifyToken, async (req, res) => {
   try {
     const profile = await Profile.findOne({ user: req.userId }).populate('user');
-    if (!profile) return res.status(404).send({ result: null, message: 'User not found' });
+    if (!profile) return res.status(400).send({ result: null, message: 'User not found' });
     const { user: { name, email } } = profile;
     return res.status(200).send({ result: profile, message: `Welcome, ${name || email}!` });
   } catch (e) {
-    res.status(400).send({ result: null, message: e.message });
+    res.status(500).send({ result: null, message: e.message });
   }
 });
 
