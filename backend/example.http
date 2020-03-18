@@ -1,8 +1,0 @@
-POST http://localhost:3000/api/auth/account_activation HTTP/1.1
-content-type: application/json
-x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlNzFmOWM1NWUzZGUzMGU5OGFiNDRkNCIsImlhdCI6MTU4NDUyOTI0MiwiZXhwIjoxNTg0NjE1NjQyfQ.-th8yHb-tXffvMNycOgKhpjYRm7584Yd659LLYfFaM8
-
-{
-    "email": "lnv161297@gmail.com",
-    "activationCode": "493448"
-}
