@@ -1,9 +1,6 @@
-import mongoose from 'mongoose'
-import config from '../config'
+import mongoose from 'mongoose';
 
-const { Schema } = mongoose
-
-const connection = mongoose.createConnection(config.DB_URI, { useNewUrlParser: true })
+const { Schema } = mongoose;
 
 const profileSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: 'User' },
@@ -12,8 +9,8 @@ const profileSchema = new Schema({
   location: {},
   description: String,
   avatar: String
-})
+});
 
-const Profile = connection.model('Profile', profileSchema)
+const Profile = mongoose.model('Profile', profileSchema);
 
-export default Profile
+export default Profile;

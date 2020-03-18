@@ -1,8 +1,15 @@
-import 'dotenv/config'
+import 'dotenv/config';
 
-const { DB_URI, JWT_SECRET } = process.env
+const {
+  DB_URI,
+  JWT_SECRET,
+  GMAIL_USER,
+  GMAIL_PASSWORD
+} = process.env;
 
 export default {
   DB_URI,
-  JWT_SECRET
-}
+  JWT_SECRET,
+  GMAIL_USER,
+  GMAIL_PASSWORD
+};

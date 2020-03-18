@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "React Native Messenger",
-    "slug": "react-native-messenger",
+    "name": "Messenger",
+    "slug": "messenger",
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "platforms": [

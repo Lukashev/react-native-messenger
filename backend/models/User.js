@@ -1,8 +1,6 @@
-import mongoose from 'mongoose'
+import mongoose from 'mongoose';
 
-const { Schema } = mongoose
-
-const connection = mongoose.createConnection(config.DB_URI, { useNewUrlParser: true })
+const { Schema } = mongoose;
 
 const userSchema = new Schema({
   email: { type: String, required: true },
@@ -10,9 +8,9 @@ const userSchema = new Schema({
   regDate: { type: Date, default: Date.now },
   isActivated: { type: Boolean, default: false },
   activationCode: { type: String, default: null },
-  recoveryHash: { type: String, default: null }  
-})
+  recoveryHash: { type: String, default: null }
+});
 
-const User = connection.model('User', userSchema)
+const User = mongoose.model('User', userSchema);
 
-export default User
+export default User;

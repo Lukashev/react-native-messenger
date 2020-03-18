@@ -780,7 +780,7 @@ bluebird@3.5.1:
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.1.tgz#d9551f9de98f1fcda1e683d17ee91a0602ee2eb9"
   integrity sha512-MKiLiV+I1AA596t9w1sQJ8jkiSr5+ZKi0WKrYGUn6d1Fx+Ij4tIj+m2WMQSGczs5jZVxV339chE8iwk6F64wjA==
 
-body-parser@1.19.0:
+body-parser@1.19.0, body-parser@^1.19.0:
   version "1.19.0"
   resolved "https://registry.yarnpkg.com/body-parser/-/body-parser-1.19.0.tgz#96b2709e57c9c4e09a6fd66a8fd979844f69f08a"
   integrity sha512-dhEPs72UPbDnAQJ9ZKMNTP6ptJaionhP5cBb541nXPlW60Jepo9RV/a4fX4XWW9CuFNK22krhrj1+rgzifNCsw==
@@ -2521,6 +2521,11 @@ node-pre-gyp@0.14.0:
     rimraf "^2.6.1"
     semver "^5.3.0"
     tar "^4.4.2"
+
+nodemailer@^6.4.5:
+  version "6.4.5"
+  resolved "https://registry.yarnpkg.com/nodemailer/-/nodemailer-6.4.5.tgz#45614c6454d1a947242105eeddae03df87e29916"
+  integrity sha512-NH7aNVQyZLAvGr2+EOto7znvz+qJ02Cb/xpou98ApUt5tEAUSVUxhvHvgV/8I5dhjKTYqUw0nasoKzLNBJKrDQ==
 
 nodemon@^2.0.2:
   version "2.0.2"

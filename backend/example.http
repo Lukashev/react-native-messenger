@@ -1,0 +1,8 @@
+POST http://localhost:3000/api/auth/signup HTTP/1.1
+content-type: application/json
+x-access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlNzFkMmYxOTdkMTJhNDcxYzkyMmYwZSIsImlhdCI6MTU4NDUxNzk0MCwiZXhwIjoxNTg0NjA0MzQwfQ.pDJAHpTdh3XEk6depXM6R5ukrpNWqr1sftTIG9nLBO0
+
+{
+    "email": "lnv161297@gmail.com",
+    "password": "123456"
+}

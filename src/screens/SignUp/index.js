@@ -1,5 +1,5 @@
+import { connect } from 'react-redux';
 import SignUp from './SignUp';
-import { connect } from 'react-redux'
 import { changeStoreState } from '../../store';
 
 const mapStateToProps = ({ Auth }) => ({ Auth });
