@@ -13,6 +13,7 @@ import SignUp from './src/screens/SignUp';
 import PasswordRecovery from './src/screens/PasswordRecovery';
 import { colors } from './src/theme';
 import AccountActivation from './src/screens/AccountActivation';
+import Profile from './src/screens/Profile/Profile';
 
 
 const store = createStore(
@@ -67,6 +68,10 @@ export default function App() {
           <Stack.Screen
             name="Account Activation"
             component={AccountActivation}
+          />
+          <Stack.Screen
+            name="Profile"
+            component={Profile}
           />
         </Stack.Navigator>
       </NavigationContainer>

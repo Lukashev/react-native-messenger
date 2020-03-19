@@ -1,4 +1,5 @@
-import { colors } from "./theme";
+import triggerSnack from "./store/actions/snack";
+import { changeStoreState } from "./store";
 
 export const redirect = (routeName, navigation) => () => navigation.navigate(routeName);
 
@@ -7,8 +8,13 @@ export const changeAuthState = (key, scope) => (value) => {
   changeAuthState({ [key]: value });
 };
 
-export const getSnackOptions = message => ({
-  message,
-  backgroundColor: colors['primary'],
-  textColor: colors['secondary']
-})
+export const signUpFormValidation = (dispatch, message, key) => {
+  let validation = {
+    emailValid: true,
+    passwordValid: true,
+    retypedPasswordValid: true
+  }
+  validation[`${key}Valid`] = false
+  dispatch(changeStoreState('CHANGE_AUTH_STATE', validation))
+  dispatch(triggerSnack(message))
+}

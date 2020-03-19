@@ -5,7 +5,10 @@ const INITIAL_STATE = {
   rememberMe: false,
   recoveryLinkSent: false,
   activationCode: '',
-  activationCodeSent: false
+  activationCodeSent: false,
+  emailValid: false,
+  passwordValid: false,
+  retypedPasswordValid: false
 };
 
 export const authReducer = (state = INITIAL_STATE, action) => {

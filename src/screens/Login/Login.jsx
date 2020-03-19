@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { KeyboardAvoidingView, View, StyleSheet } from 'react-native'
+import isEmpty from 'validator/lib/isEmpty'
 import styled from 'styled-components'
 /* COMPONENTS */
 import TextField from '../../components/TextField'
@@ -8,6 +9,7 @@ import { Switch } from 'react-native-gesture-handler'
 import Typography from '../../components/Typography'
 import { colors } from '../../theme'
 import { redirect, changeAuthState } from '../../utils'
+import SnackbarComponent from 'react-native-snackbar-component'
 
 export const Container = styled(KeyboardAvoidingView)`
     flex: 1;
@@ -41,7 +43,7 @@ export const StyledButton = styled(Button)`
     margin: 20px 0;
 `
 
-const Link = styled(Typography)`
+export const Link = styled(Typography)`
     align-self: center;
     text-decoration: underline;
     text-decoration-color: ${colors['primary']};
@@ -67,16 +69,30 @@ class Login extends Component {
 	}
 
 	onSubmit = async () => {
+		const { navigation } = this.props
 		this.setState(state => ({ ...state, showIndicator: true }))
-		await this.props.submit()
-		this.setState(state => ({ ...state, showIndicator: false }))	
+		await this.props.submit(navigation)
+		this.setState(state => ({ ...state, showIndicator: false }))
 	}
 
 	render() {
 		const { showIndicator } = this.state
-		const { Auth: { email, password, rememberMe }, navigation } = this.props
+		const {
+			Auth: { email, password, rememberMe },
+			Snack,
+			navigation
+		} = this.props
+		const someEmpty = isEmpty(email) || isEmpty(password)
 		return (
 			<Container behavior="padding" enabled>
+				{Snack && <SnackbarComponent
+					visible={Snack.visible}
+					textMessage={Snack.message}
+					backgroundColor={colors['primary']}
+					messageColor={colors['secondary']}
+					position='top'
+					actionText={null}
+				/>}
 				<FormContainer>
 					<TextField
 						label={'Email'}
@@ -94,7 +110,7 @@ class Login extends Component {
 						<Switch value={rememberMe} onValueChange={changeAuthState('rememberMe', this)} />
 						<SwitchText>Remember me</SwitchText>
 					</SwitchContainer>
-					<StyledButton onPress={this.onSubmit} showIndicator={showIndicator}>
+					<StyledButton onPress={this.onSubmit} showIndicator={showIndicator} disabled={!!someEmpty}>
 						<StyledButtonTypo>Submit</StyledButtonTypo>
 					</StyledButton>
 					<Link onPress={redirect('Password Recovery', navigation)}>

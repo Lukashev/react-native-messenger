@@ -5150,13 +5150,12 @@ react-native-screens@2.0.0-alpha.12:
   dependencies:
     debounce "^1.2.0"
 
-react-native-snack@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/react-native-snack/-/react-native-snack-1.0.2.tgz#e4772df8fc524eb48358d86cb5e740e3b327dfeb"
-  integrity sha512-cSGv8C5nkugllJMQtG0wiPA9vcE3e0rzpAEdEuczQIq9myKtzQvjUuZY7IpUodo4h4UlXCWlB8qMCpcJ+diQUw==
+react-native-snackbar-component@^1.1.8:
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/react-native-snackbar-component/-/react-native-snackbar-component-1.1.8.tgz#7eb3e53b03a69608293f9b7f1319669c7416611b"
+  integrity sha512-WU8K6yWNwk8PaYCDBH51YikfABZXlszPGO1q+1xCDBbdb1lnYMkf/gw5mssjKCyLj6UmpqHraN+e4yDuCbDDjw==
   dependencies:
-    lodash "^4.17.14"
-    react-native-iphone-x-helper "^1.2.1"
+    prop-types "^15.6.0"
 
 react-native-svg@9.13.3:
   version "9.13.3"

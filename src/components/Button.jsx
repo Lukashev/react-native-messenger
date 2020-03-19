@@ -10,6 +10,7 @@ const Container = styled(TouchableOpacity)`
     height: 55px;
     justify-content: center;
     align-items: center;
+    opacity: ${props => props.disabled ? '0.3' : '1'};
     background-color: ${colors['primary']};
     border: 2px solid ${colors['secondary']};
     border-radius: 10px;
@@ -17,9 +18,9 @@ const Container = styled(TouchableOpacity)`
 `
 
 const Button = (props) => {
-    const { children, typoStyle, style, showIndicator, onPress } = props
+    const { children, typoStyle, style, showIndicator, onPress, disabled } = props
     return (
-        <Container style={style} onPress={onPress}>
+        <Container style={style} onPress={onPress} disabled={disabled}>
             {!showIndicator
                 ? <Typography style={typoStyle}>{children}</Typography>
                 : <ActivityIndicator size='large' color='white' />
@@ -31,13 +32,15 @@ const Button = (props) => {
 Button.propTypes = {
     typoStyle: objectOf(any),
     showIndicator: bool,
-    onPress: func
+    onPress: func,
+    disabled: bool
 }
 
 Button.defaultProps = {
     typoStyle: {},
     showIndicator: false,
-    onPress: () => {}
+    onPress: () => {},
+    disabled: false
 }
 
 export default Button

@@ -20,7 +20,11 @@ router.post('/login', async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) return res.status(400).send({ token: null, message: 'User not found' });
-    if (!user.isActivated) return res.status(400).send({ token: null, message: 'Account is not activated' });
+    if (!user.isActivated) return res.status(400).send({ 
+      token: null, 
+      message: 'Account is not activated',
+      needActivation: true
+    });
 
     const passwordIsValid = bcrypt.compareSync(password, user.password);
     if (!passwordIsValid) return res.status(400).send({ token: null, message: 'Invalid password' });
@@ -48,7 +52,7 @@ router.post('/signup', async (req, res) => {
 
     await sendActivationCode(newUser);
 
-    return res.status(200).send({ result: true, message: 'You are successfully registered' });
+    return res.status(200).send({ result: true, message: 'You are successfully registered. Check your mail' });
   } catch (e) {
     res.status(500).send({ result: null, message: e.message });
   }
@@ -56,13 +60,15 @@ router.post('/signup', async (req, res) => {
 
 router.post('/account_activation', async (req, res) => {
   const { email, activationCode } = req.body
+  console.log(email, activationCode)
   try {
     const user = await User.findOneAndUpdate({
       email,
       activationCode
     }, { isActivated: true })
-    if (!user) return res.status(400).send({ result: null, message: 'User not found' })
-    if (user.isActivated) return res.status(400).send({ result: null, message: 'This account is already activated' })
+    console.log(user)
+    if (!user) return res.status(400).send({ result: null, message: 'Invalid activation code' })
+    if (user.isActivated) return res.status(200).send({ result: true, message: 'This account is already activated' })
     return res.status(200).send({ result: true, message: 'You have successfully activated your account' })
   } catch (e) {
     res.status(500).send({ result: null, message: e.message })
