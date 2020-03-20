@@ -76,7 +76,7 @@ router.post('/account_activation', async (req, res) => {
 })
 
 router.get('/account_activation', async (req, res) => {
-  const { email } = req.body
+  const { email } = req.query
   try {
     const user = await User.findOne({ email })
     if (!user) return res.status(400).send({ result: null, message: 'User not found' })

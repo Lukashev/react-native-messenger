@@ -10,8 +10,9 @@ export const closeSnack = (time = 2000, callback) => dispatch => {
   }, time)
 }
 
-const triggerSnack = (message, time, callback = () => {}) => dispatch => {
-  dispatch(changeStoreState('CHANGE_SNACK_STATE', { visible: true, message }))
+const triggerSnack = (message, { time, callback = () => {}, type = 'success' } = {}) => dispatch => {
+  console.log(type)
+  dispatch(changeStoreState('CHANGE_SNACK_STATE', { visible: true, message, type }))
   dispatch(closeSnack(time, callback))
 }
 

@@ -36,7 +36,8 @@ class SignUp extends Component {
       },
       Snack: {
         visible,
-        message
+        message,
+        type
       }
     } = this.props
     const { showIndicator } = this.state
@@ -47,7 +48,7 @@ class SignUp extends Component {
         <SnackbarComponent
           visible={visible}
           textMessage={message}
-          backgroundColor={!isValid ? 'red' : colors['primary']}
+          backgroundColor={!isValid ? colors['danger'] : isValid ? colors[type] : colors['primary']}
           messageColor={colors['secondary']}
           position='top'
           actionText={null}

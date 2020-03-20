@@ -1,6 +1,7 @@
 const INITIAL_STATE = {
   visible: false,
-  message: null
+  message: null,
+  type: 'success'
 };
 
 export const snackReducer = (state = INITIAL_STATE, action) => {

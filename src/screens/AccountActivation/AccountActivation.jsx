@@ -14,9 +14,18 @@ class AccountActivation extends Component {
   }
 
   onSubmit = async () => {
-    const { navigation } = this.props
+    const { 
+      navigation, 
+      activateAccount, 
+      getActivationCode,
+      Auth: {
+        activationCodeSent
+      } 
+    } = this.props
     this.setState(state => ({ ...state, showIndicator: true }))
-    await this.props.submit(navigation)
+    activationCodeSent
+      ? await activateAccount(navigation)
+      : await getActivationCode() 
     this.setState(state => ({ ...state, showIndicator: false }))
   }
 
@@ -34,7 +43,8 @@ class AccountActivation extends Component {
       },
       Snack: {
         visible,
-        message
+        message,
+        type
       }
     } = this.props
     return (
@@ -42,7 +52,7 @@ class AccountActivation extends Component {
         <SnackbarComponent
           visible={visible}
           textMessage={message}
-          backgroundColor={colors['primary']}
+          backgroundColor={colors[type]}
           messageColor={colors['secondary']}
           position='top'
           actionText={null}
@@ -62,7 +72,7 @@ class AccountActivation extends Component {
           <StyledButton
             onPress={this.onSubmit}
             showIndicator={showIndicator}
-            disabled={!!isEmpty(activationCode)}
+            disabled={activationCodeSent ? !!isEmpty(activationCode) : !!isEmpty(email)}
           >
             <StyledButtonTypo>
               {activationCodeSent ? `Activate` : `Get code`}

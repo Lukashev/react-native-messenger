@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { KeyboardAvoidingView, View, StyleSheet } from 'react-native'
 import isEmpty from 'validator/lib/isEmpty'
+import * as SecureStore from 'expo-secure-store'
 import styled from 'styled-components'
 /* COMPONENTS */
 import TextField from '../../components/TextField'
@@ -68,6 +69,13 @@ class Login extends Component {
 		this.state = { showIndicator: false }
 	}
 
+	componentDidMount() {
+		/* SecureStore.getItemAsync('token')
+			.then(token => {
+				console.log(token)
+			}) */
+	}
+
 	onSubmit = async () => {
 		const { navigation } = this.props
 		this.setState(state => ({ ...state, showIndicator: true }))
@@ -79,20 +87,20 @@ class Login extends Component {
 		const { showIndicator } = this.state
 		const {
 			Auth: { email, password, rememberMe },
-			Snack,
+			Snack: { visible, message, type },
 			navigation
 		} = this.props
 		const someEmpty = isEmpty(email) || isEmpty(password)
 		return (
 			<Container behavior="padding" enabled>
-				{Snack && <SnackbarComponent
-					visible={Snack.visible}
-					textMessage={Snack.message}
-					backgroundColor={colors['primary']}
+				<SnackbarComponent
+					visible={visible}
+					textMessage={message}
+					backgroundColor={colors[type]}
 					messageColor={colors['secondary']}
 					position='top'
 					actionText={null}
-				/>}
+				/>
 				<FormContainer>
 					<TextField
 						label={'Email'}
