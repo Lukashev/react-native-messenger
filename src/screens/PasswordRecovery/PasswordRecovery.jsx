@@ -8,7 +8,17 @@ import { colors } from '../../theme'
 
 class PasswordRecovery extends Component {
 
-  onSubmit = () => { }
+  constructor(props) {
+    super(props)
+    this.state = { showIndicator: false }
+  }
+
+  onSubmit = async () => {
+    const { submit, recoveryLinkSent } = this.props
+    this.setState(state => ({ ...state, showIndicator: true }))
+    await submit(recoveryLinkSent)
+    this.setState(state => ({ ...state, showIndicator: false }))
+  }
 
   render() {
     const {
@@ -24,6 +34,7 @@ class PasswordRecovery extends Component {
         type
       }
     } = this.props
+    const { showIndicator } = this.state
     return (
       <Container behavior="padding" enabled>
         <SnackbarComponent
@@ -57,7 +68,8 @@ class PasswordRecovery extends Component {
             </Fragment>}
           <StyledButton
             onPress={this.onSubmit}
-            disabled={!recoveryLinkSent ? !!isEmpty(email) : !!(isEmpty(password) || isEmpty(retypedPassword)) }
+            disabled={!recoveryLinkSent ? !!isEmpty(email) : !!(isEmpty(password) || isEmpty(retypedPassword))}
+            showIndicator={showIndicator}
           >
             <StyledButtonTypo>
               Submit

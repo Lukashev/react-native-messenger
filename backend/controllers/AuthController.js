@@ -99,6 +99,21 @@ router.post('/get_recovery_link', async(req, res) => {
   }
 })
 
+router.post('/change_password', async(req, res) => {
+  const { recoveryHash, password } = req.body
+  try {
+    const hashedPassword = bcrypt.hashSync(password, 8);
+    const user = await User.findOneAndUpdate({ recoveryHash }, { 
+      recoveryHash: null,
+      password: hashedPassword 
+    })
+    if (!user) return res.status(400).send({ result: null, message: 'Invalid hash' })
+    return res.status(200).send({ result: true, message: 'You have successfully changed your password' })
+  } catch(e) {
+    res.status(500).send({ result: null, message: e.message })
+  }
+})
+
 router.get('/me', verifyToken, async (req, res) => {
   try {
     const profile = await Profile.findOne({ user: req.userId }).populate('user');

@@ -9,7 +9,7 @@ const {
 const transporter = nodemailer.createTransport({
   service: 'Gmail',
   port: 465,
-  secure: false,
+  secure: true,
   auth: { user, pass }
 });
 

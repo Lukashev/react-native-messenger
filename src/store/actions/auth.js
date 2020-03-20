@@ -1,13 +1,16 @@
 import { API_URL } from 'react-native-dotenv'
 import * as SecureStore from 'expo-secure-store'
-
+import { Linking } from 'expo'
 /* Validators */
 import isEmail from 'validator/lib/isEmail'
 import isLength from 'validator/lib/isLength'
 
 import { redirect, signUpFormValidation, resetRouteStack } from '../../utils'
 import triggerSnack from './snack'
+import * as RootNavigation from '../../RootNavigation'
 import { changeStoreState } from '..'
+
+const appURL = Linking.makeUrl('')
 
 export const login = navigation => async (dispatch, getState) => {
   const { Auth: { email, password, rememberMe, activationCodeSent } } = getState()
@@ -124,6 +127,70 @@ export const getActivationCode = () => async (dispatch, getState) => {
         }
       }))
     }
+  } catch (e) {
+    dispatch(triggerSnack(e.message, { type: 'danger' }))
+  }
+}
+
+export const getRecoveryLink = () => async (dispatch, getState) => {
+  const { Auth: { email } } = getState()
+  try {
+    const promise = await fetch(`${API_URL}/auth/get_recovery_link`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email.trim(),
+        appURL
+      })
+    })
+    const response = await promise.json()
+    const { result, message } = response
+    if (!result) {
+      dispatch(triggerSnack(message, { type: 'danger' }))
+    } else {
+      dispatch(triggerSnack(message, {
+        callback: () => {
+          RootNavigation.navigate('Login')
+        }
+      }))
+    }
+  } catch (e) {
+    dispatch(triggerSnack(e.message, { type: 'danger' }))
+  }
+}
+
+export const changePassword = recoveryHash => async (dispatch, getState) => {
+  const { Auth: { password, retypedPassword } } = getState()
+  try {
+    if (!isLength(password, { min: 6, max: undefined }))
+      return signUpFormValidation(dispatch, 'Password must be longer than 6 characters', 'password')
+    if (password.trim() !== retypedPassword.trim())
+      return signUpFormValidation(dispatch, 'Passwords don`t match', 'retypedPassword')
+    dispatch(changeStoreState('CHANGE_AUTH_STATE', {
+      passwordValid: true,
+      retypedPasswordValid: true
+    }))
+
+    const promise = await fetch(`${API_URL}/auth/change_password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        password,
+        recoveryHash
+      })
+    })
+    const response = await promise.json()
+    const { result, message } = response
+    if (!result) {
+      dispatch(triggerSnack(message, { type: 'danger' }))
+    } else {
+      dispatch(triggerSnack(message, {
+        callback: () => {
+          RootNavigation.navigate('Login')
+        }
+      }))
+    }
+
   } catch (e) {
     dispatch(triggerSnack(e.message, { type: 'danger' }))
   }
