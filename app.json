@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "Messenger",
+    "scheme": "messenger",
     "slug": "messenger",
     "privacy": "public",
     "sdkVersion": "36.0.0",
@@ -23,8 +24,22 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "android": {
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [{
+            "scheme": "messenger"
+          }],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
+    },
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "infoPlist": {
         "NSAppTransportSecurity": {
           "NSExceptionDomains": {

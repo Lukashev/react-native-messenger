@@ -1,11 +1,8 @@
 import React, { Fragment } from 'react';
 import { Provider } from 'react-redux';
-import thunk from 'redux-thunk'
-import { createStore, applyMiddleware } from 'redux';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as Font from 'expo-font';
-import AppStore from './src/store';
 import Typography from './src/components/Typography';
 /* SCREENS */
 import Login from './src/screens/Login';
@@ -14,12 +11,11 @@ import PasswordRecovery from './src/screens/PasswordRecovery';
 import { colors } from './src/theme';
 import AccountActivation from './src/screens/AccountActivation';
 import Profile from './src/screens/Profile/Profile';
+import initDeepLinking from './src/deeplinking';
+import { navigationRef } from './src/RootNavigation';
+import store from './src/store'
 
 
-const store = createStore(
-  AppStore,
-  applyMiddleware(thunk)
-);
 const Stack = createStackNavigator();
 
 const headerTitleStyle = {
@@ -35,12 +31,15 @@ export default function App() {
     Font.loadAsync({
       'montserrat-bold': require('./assets/fonts/Montserrat-Bold.ttf'), // eslint-disable-line global-require
       'montserrat-regular': require('./assets/fonts/Montserrat-Regular.ttf'), // eslint-disable-line global-require
-    }).then(() => setFontLoadingState(true));
+    }).then(() => { 
+      setFontLoadingState(true) 
+      initDeepLinking()
+    });
   }, []);
 
   return fontLoaded && (
     <Provider store={store}>
-      <NavigationContainer>
+      <NavigationContainer ref={navigationRef}>
         <Stack.Navigator screenOptions={{
           headerTitle: ({ children }) => (
               <Typography style={headerTitleStyle}>{children}</Typography>

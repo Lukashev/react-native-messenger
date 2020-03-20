@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 import config from '../config';
-import { verifyToken, sendActivationCode } from '../utils';
+import { verifyToken, sendActivationCode, sendRecoveryLink } from '../utils';
 
 import User from '../models/User';
 import Profile from '../models/Profile';
@@ -82,6 +82,18 @@ router.get('/account_activation', async (req, res) => {
     if (!user) return res.status(400).send({ result: null, message: 'User not found' })
     await sendActivationCode(user)
     return res.status(200).send({ result: true, message: 'Activation code sent to your mail' })
+  } catch (e) {
+    res.status(500).send({ result: null, message: e.message })
+  }
+})
+
+router.post('/get_recovery_link', async(req, res) => {
+  const { email, appURL } = req.body
+  try {
+    const user = await User.findOne({ email })
+    if (!user) return res.status(400).send({ result: null, message: 'User not found' })
+    await sendRecoveryLink(user, appURL)
+    return res.status(200).send({ result: true, message: 'Please, check your mail' })
   } catch (e) {
     res.status(500).send({ result: null, message: e.message })
   }
