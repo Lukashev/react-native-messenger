@@ -19,14 +19,3 @@ export const signUpFormValidation = (dispatch, message, key) => {
   dispatch(changeStoreState('CHANGE_AUTH_STATE', validation))
   dispatch(triggerSnack(message, { type: 'danger' }))
 }
-
-export const resetRouteStack = (navigation, routeName = 'Login') => {
-  navigation.dispatch(
-    CommonActions.reset({
-      index: 1,
-      routes: [
-        { name: routeName }
-      ],
-    })
-  );
-}

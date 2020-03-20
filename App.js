@@ -10,7 +10,7 @@ import SignUp from './src/screens/SignUp';
 import PasswordRecovery from './src/screens/PasswordRecovery';
 import { colors } from './src/theme';
 import AccountActivation from './src/screens/AccountActivation';
-import Profile from './src/screens/Profile/Profile';
+import Profile from './src/screens/Profile';
 import initDeepLinking from './src/deeplinking';
 import { navigationRef } from './src/RootNavigation';
 import store from './src/store'

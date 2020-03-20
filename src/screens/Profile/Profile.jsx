@@ -15,16 +15,12 @@ class Profile extends Component {
       .then(token => this.setState({ token }))
   }
 
-  logout = async () => {
-    await SecureStore.deleteItemAsync('token')
-    this.props.navigation.navigate('Login')
-  }
-
   render() {
+    const { logout } = this.props
     return (
       <View>
         <Text>{this.state.token}</Text>
-        <Button onPress={this.logout}>Logout</Button>
+        <Button onPress={logout}>Logout</Button>
       </View>
     )
   }

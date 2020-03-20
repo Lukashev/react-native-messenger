@@ -4,7 +4,6 @@ import store from '../store'
 import { changeStoreState } from '../store'
 
 const initDeepLinking = () => {
-
   Linking.getInitialURL()
     .then(url => {
       const { queryParams: { recoveryHash } } = Linking.parse(url)
@@ -19,7 +18,6 @@ const initDeepLinking = () => {
 
   Linking.addListener('url', async ({ url }) => {
     const { queryParams: { recoveryHash } } = await Linking.parse(url)
-    console.log(recoveryHash)
     if (recoveryHash) {
       store.dispatch(changeStoreState('CHANGE_AUTH_STATE', { recoveryLinkSent: true }))
       return RootNavigation.navigate('Password Recovery', { recoveryHash })

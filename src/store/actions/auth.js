@@ -5,7 +5,7 @@ import { Linking } from 'expo'
 import isEmail from 'validator/lib/isEmail'
 import isLength from 'validator/lib/isLength'
 
-import { redirect, signUpFormValidation, resetRouteStack } from '../../utils'
+import { redirect, signUpFormValidation } from '../../utils'
 import triggerSnack from './snack'
 import * as RootNavigation from '../../RootNavigation'
 import { changeStoreState } from '..'
@@ -33,7 +33,7 @@ export const login = navigation => async (dispatch, getState) => {
       }
     } else {
       await SecureStore.setItemAsync('token', token)
-      resetRouteStack(navigation, 'Profile')
+      RootNavigation.resetRouteStack('Profile')
       redirect('Profile', navigation)()
     }
   } catch (e) {
@@ -161,7 +161,6 @@ export const getRecoveryLink = () => async (dispatch, getState) => {
 
 export const changePassword = recoveryHash => async (dispatch, getState) => {
   const { Auth: { password, retypedPassword } } = getState()
-  console.log('SYKA', recoveryHash)
   try {
     if (!isLength(password, { min: 6, max: undefined }))
       return signUpFormValidation(dispatch, 'Password must be longer than 6 characters', 'password')
@@ -185,12 +184,15 @@ export const changePassword = recoveryHash => async (dispatch, getState) => {
     if (!result) {
       dispatch(triggerSnack(message, { type: 'danger' }))
     } else {
-      dispatch(changeStoreState('CHANGE_AUTH_STATE', {
-        recoveryLinkSent: false
-      }))
       dispatch(triggerSnack(message, {
         callback: () => {
-          RootNavigation.navigate('Login')
+          dispatch(changeStoreState('CHANGE_AUTH_STATE', {
+            password: '',
+            retypedPassword: '',
+            recoveryLinkSent: false
+          }))
+          RootNavigation.resetRouteStack('Login')
+          RootNavigation.navigate('Login', { recoveryHash: null })
         }
       }))
     }
@@ -200,4 +202,13 @@ export const changePassword = recoveryHash => async (dispatch, getState) => {
   }
 }
 
-export const logout = () => { }
+export const logout = () => async () => {
+  const { resetRouteStack, navigate } = RootNavigation
+  try {
+    await SecureStore.deleteItemAsync('token')
+    resetRouteStack('Login')
+    navigate('Login')
+  } catch (e) {
+    dispatch(triggerSnack(e.message, { type: 'danger' }))
+  }
+}

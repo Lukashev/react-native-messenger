@@ -121,7 +121,11 @@ class Login extends Component {
 					<StyledButton onPress={this.onSubmit} showIndicator={showIndicator} disabled={!!someEmpty}>
 						<StyledButtonTypo>Submit</StyledButtonTypo>
 					</StyledButton>
-					<Link onPress={redirect('Password Recovery', navigation)}>
+					<Link onPress={() => {
+						navigation.setParams({ recoveryHash: null })
+						redirect('Password Recovery', navigation)()
+					}
+					}>
 						Forgot password?
                     </Link>
 					<Link onPress={redirect('Sign Up', navigation)}>
