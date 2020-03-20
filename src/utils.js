@@ -17,7 +17,7 @@ export const signUpFormValidation = (dispatch, message, key) => {
   }
   validation[`${key}Valid`] = false
   dispatch(changeStoreState('CHANGE_AUTH_STATE', validation))
-  dispatch(triggerSnack(message))
+  dispatch(triggerSnack(message, { type: 'danger' }))
 }
 
 export const resetRouteStack = (navigation, routeName = 'Login') => {

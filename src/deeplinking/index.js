@@ -5,8 +5,21 @@ import { changeStoreState } from '../store'
 
 const initDeepLinking = () => {
 
+  Linking.getInitialURL()
+    .then(url => {
+      const { queryParams: { recoveryHash } } = Linking.parse(url)
+      if (recoveryHash) {
+        store.dispatch(changeStoreState('CHANGE_AUTH_STATE', { recoveryLinkSent: true }))
+        return RootNavigation.navigate('Password Recovery', { recoveryHash })
+      }
+    })
+    .catch(err => {
+      console.warn('Deeplinking error', err)
+    })
+
   Linking.addListener('url', async ({ url }) => {
-    const { queryParams: { recoveryHash } = {} } = await Linking.parse(url)
+    const { queryParams: { recoveryHash } } = await Linking.parse(url)
+    console.log(recoveryHash)
     if (recoveryHash) {
       store.dispatch(changeStoreState('CHANGE_AUTH_STATE', { recoveryLinkSent: true }))
       return RootNavigation.navigate('Password Recovery', { recoveryHash })

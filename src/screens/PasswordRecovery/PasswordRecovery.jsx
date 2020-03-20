@@ -5,6 +5,7 @@ import { StyledTextField } from '../SignUp/SignUp'
 import { changeAuthState } from '../../utils'
 import SnackbarComponent from 'react-native-snackbar-component'
 import { colors } from '../../theme'
+import { Linking } from 'expo'
 
 class PasswordRecovery extends Component {
 
@@ -14,9 +15,10 @@ class PasswordRecovery extends Component {
   }
 
   onSubmit = async () => {
-    const { submit, recoveryLinkSent } = this.props
+    const { submit, Auth: { recoveryLinkSent }} = this.props
+    const { queryParams } = Linking.parse(await Linking.getInitialURL())
     this.setState(state => ({ ...state, showIndicator: true }))
-    await submit(recoveryLinkSent)
+    await submit(recoveryLinkSent, queryParams.recoveryHash)
     this.setState(state => ({ ...state, showIndicator: false }))
   }
 
@@ -26,7 +28,9 @@ class PasswordRecovery extends Component {
         email,
         password,
         retypedPassword,
-        recoveryLinkSent
+        recoveryLinkSent,
+        passwordValid,
+        retypedPasswordValid
       },
       Snack: {
         visible,
@@ -56,12 +60,22 @@ class PasswordRecovery extends Component {
               <StyledTextField
                 label={'Password'}
                 value={password}
+                inputStyle={{
+                  borderColor: !passwordValid && visible
+                    ? colors['danger']
+                    : colors['primary']
+                }}
                 onChangeText={changeAuthState('password', this)}
                 secureEnabled
               />
               <StyledTextField
                 label={'Retype Password'}
                 value={retypedPassword}
+                inputStyle={{
+                  borderColor: !retypedPasswordValid && visible
+                    ? colors['danger']
+                    : colors['primary']
+                }}
                 onChangeText={changeAuthState('retypedPassword', this)}
                 secureEnabled
               />

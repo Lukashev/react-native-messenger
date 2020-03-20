@@ -29,7 +29,7 @@ export const sendActivationCode = async (user) => {
 export const sendRecoveryLink = async (user, appURL) => {
   const recoveryHash = cryptoRandomString({ length: 12, type: 'url-safe' });
   await User.findByIdAndUpdate(user._id, { recoveryHash });
-  const link = `${appURL}?recoveryHash=${recoveryHash}`
+  const link = `http://192.168.0.100:3000/password_recovery?recoveryHash=${recoveryHash}&appURL=${appURL}`
   await sendMail(user.email, {
     subject: 'Messenger: Password Recovery',
     html: `<a href="${link}"><span>Follow this link</span></a>`,

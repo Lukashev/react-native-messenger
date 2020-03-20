@@ -161,6 +161,7 @@ export const getRecoveryLink = () => async (dispatch, getState) => {
 
 export const changePassword = recoveryHash => async (dispatch, getState) => {
   const { Auth: { password, retypedPassword } } = getState()
+  console.log('SYKA', recoveryHash)
   try {
     if (!isLength(password, { min: 6, max: undefined }))
       return signUpFormValidation(dispatch, 'Password must be longer than 6 characters', 'password')
@@ -184,6 +185,9 @@ export const changePassword = recoveryHash => async (dispatch, getState) => {
     if (!result) {
       dispatch(triggerSnack(message, { type: 'danger' }))
     } else {
+      dispatch(changeStoreState('CHANGE_AUTH_STATE', {
+        recoveryLinkSent: false
+      }))
       dispatch(triggerSnack(message, {
         callback: () => {
           RootNavigation.navigate('Login')
