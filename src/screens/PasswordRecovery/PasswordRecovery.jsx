@@ -15,10 +15,10 @@ class PasswordRecovery extends Component {
   }
 
   onSubmit = async () => {
-    const { submit, Auth: { recoveryLinkSent }} = this.props
-    const { queryParams } = Linking.parse(await Linking.getInitialURL())
+    const { submit, Auth: { recoveryLinkSent }, route } = this.props
+    const { params = {} } = route
     this.setState(state => ({ ...state, showIndicator: true }))
-    await submit(recoveryLinkSent, queryParams.recoveryHash)
+    await submit(recoveryLinkSent, params.recoveryHash)
     this.setState(state => ({ ...state, showIndicator: false }))
   }
 
