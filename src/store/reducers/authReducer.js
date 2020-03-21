@@ -2,6 +2,7 @@ const INITIAL_STATE = {
   email: '',
   password: '',
   retypedPassword: '',
+  isAuthenticated: false,
   rememberMe: false,
   recoveryLinkSent: false,
   activationCode: '',

@@ -1,4 +1,5 @@
 import { API_URL } from 'react-native-dotenv';
+import { Na } from '@react-navigation/native';
 import * as SecureStore from 'expo-secure-store';
 import { Linking } from 'expo';
 /* Validators */
@@ -37,8 +38,7 @@ export const login = (navigation) => async (dispatch, getState) => {
       }
     } else {
       await SecureStore.setItemAsync('token', token);
-      RootNavigation.resetRouteStack('Profile');
-      redirect('Profile', navigation)();
+      dispatch(changeStoreState('CHANGE_AUTH_STATE', { isAuthenticated: true }));
     }
   } catch (e) {
     dispatch(triggerSnack(e.message, { type: 'danger' }));
@@ -201,11 +201,9 @@ export const changePassword = (recoveryHash) => async (dispatch, getState) => {
 };
 
 export const logout = () => async (dispatch) => {
-  const { resetRouteStack, navigate } = RootNavigation;
   try {
     await SecureStore.deleteItemAsync('token');
-    resetRouteStack('Login');
-    navigate('Login');
+    dispatch(changeStoreState('CHANGE_AUTH_STATE', { isAuthenticated: false }));
   } catch (e) {
     dispatch(triggerSnack(e.message, { type: 'danger' }));
   }

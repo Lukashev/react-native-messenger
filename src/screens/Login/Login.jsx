@@ -65,28 +65,27 @@ const styles = StyleSheet.create({
 
 class Login extends Component {
 
+	_isMounted = false;
+
 	constructor(props) {
 		super(props)
 		this.state = { showIndicator: false }
 	}
 
 	componentDidMount() {
-		SecureStore.getItemAsync('token')
-			.then(token => {
-				if (token)  {
-					 const { navigate, resetRouteStack } = RootNavigation	
-					 resetRouteStack('Profile')
-					 navigate('Profile')
-				}
-			})
-			.catch(console.error)
+		this._isMounted = true;
+	}
+
+	componentWillUnmount() {
+		this._isMounted = false;
 	}
 
 	onSubmit = async () => {
 		const { navigation } = this.props
 		this.setState(state => ({ ...state, showIndicator: true }))
 		await this.props.submit(navigation)
-		this.setState(state => ({ ...state, showIndicator: false }))
+		if (this._isMounted)
+			this.setState(state => ({ ...state, showIndicator: false }))
 	}
 
 	render() {
