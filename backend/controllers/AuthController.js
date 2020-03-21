@@ -4,12 +4,15 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
 import config from '../config';
-import { verifyToken, sendActivationCode, sendRecoveryLink } from '../utils';
+import {
+  verifyToken, sendActivationCode, sendRecoveryLink, getIPAddress
+} from '../utils';
 
 import User from '../models/User';
 import Profile from '../models/Profile';
 
 const router = express.Router();
+const ipAddress = getIPAddress();
 
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
@@ -20,11 +23,13 @@ router.post('/login', async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) return res.status(400).send({ token: null, message: 'User not found' });
-    if (!user.isActivated) return res.status(400).send({ 
-      token: null, 
-      message: 'Account is not activated',
-      needActivation: true
-    });
+    if (!user.isActivated) {
+      return res.status(400).send({
+        token: null,
+        message: 'Account is not activated',
+        needActivation: true
+      });
+    }
 
     const passwordIsValid = bcrypt.compareSync(password, user.password);
     if (!passwordIsValid) return res.status(400).send({ token: null, message: 'Invalid password' });
@@ -59,60 +64,59 @@ router.post('/signup', async (req, res) => {
 });
 
 router.post('/account_activation', async (req, res) => {
-  const { email, activationCode } = req.body
-  console.log(email, activationCode)
+  const { email, activationCode } = req.body;
   try {
     const user = await User.findOneAndUpdate({
       email,
       activationCode
-    }, { isActivated: true })
-    console.log(user)
-    if (!user) return res.status(400).send({ result: null, message: 'Invalid activation code' })
-    if (user.isActivated) return res.status(200).send({ result: true, message: 'This account is already activated' })
-    return res.status(200).send({ result: true, message: 'You have successfully activated your account' })
+    }, { isActivated: true });
+    if (!user) return res.status(400).send({ result: null, message: 'Invalid activation code' });
+    if (user.isActivated) return res.status(200).send({ result: true, message: 'This account is already activated' });
+    return res.status(200).send({ result: true, message: 'You have successfully activated your account' });
   } catch (e) {
-    res.status(500).send({ result: null, message: e.message })
+    res.status(500).send({ result: null, message: e.message });
   }
-})
+});
 
 router.get('/account_activation', async (req, res) => {
-  const { email } = req.query
+  const { email } = req.query;
   try {
-    const user = await User.findOne({ email })
-    if (!user) return res.status(400).send({ result: null, message: 'User not found' })
-    await sendActivationCode(user)
-    return res.status(200).send({ result: true, message: 'Activation code sent to your mail' })
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).send({ result: null, message: 'User not found' });
+    await sendActivationCode(user);
+    return res.status(200).send({ result: true, message: 'Activation code sent to your mail' });
   } catch (e) {
-    res.status(500).send({ result: null, message: e.message })
+    res.status(500).send({ result: null, message: e.message });
   }
-})
+});
 
-router.post('/get_recovery_link', async(req, res) => {
-  const { email, appURL } = req.body
+router.post('/get_recovery_link', async (req, res) => {
+  const { email, appURL } = req.body;
   try {
-    const user = await User.findOne({ email })
-    if (!user) return res.status(400).send({ result: null, message: 'User not found' })
-    await sendRecoveryLink(user, appURL)
-    return res.status(200).send({ result: true, message: 'Please, check your mail' })
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).send({ result: null, message: 'User not found' });
+    const serverURL = `${req.protocol}://${ipAddress}:${req.socket.localPort}`;
+    await sendRecoveryLink(user, appURL, serverURL);
+    return res.status(200).send({ result: true, message: 'Please, check your mail' });
   } catch (e) {
-    res.status(500).send({ result: null, message: e.message })
+    res.status(500).send({ result: null, message: e.message });
   }
-})
+});
 
-router.post('/change_password', async(req, res) => {
-  const { recoveryHash, password } = req.body
+router.post('/change_password', async (req, res) => {
+  const { recoveryHash, password } = req.body;
   try {
     const hashedPassword = bcrypt.hashSync(password, 8);
-    const user = await User.findOneAndUpdate({ recoveryHash }, { 
+    const user = await User.findOneAndUpdate({ recoveryHash }, {
       recoveryHash: null,
-      password: hashedPassword 
-    })
-    if (!user) return res.status(400).send({ result: null, message: 'Invalid hash' })
-    return res.status(200).send({ result: true, message: 'You have successfully changed your password' })
-  } catch(e) {
-    res.status(500).send({ result: null, message: e.message })
+      password: hashedPassword
+    });
+    if (!user) return res.status(400).send({ result: null, message: 'Invalid hash' });
+    return res.status(200).send({ result: true, message: 'You have successfully changed your password' });
+  } catch (e) {
+    res.status(500).send({ result: null, message: e.message });
   }
-})
+});
 
 router.get('/me', verifyToken, async (req, res) => {
   try {

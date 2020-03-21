@@ -1,8 +1,16 @@
 import jwt from 'jsonwebtoken';
 import cryptoRandomString from 'crypto-random-string';
+import os from 'os';
 import sendMail from '../nodemailer';
 import config from '../config';
 import User from '../models/User';
+
+export const getIPAddress = () => {
+  const ifs = os.networkInterfaces();
+  return Object.keys(ifs)
+    .map((x) => ifs[x].filter((x) => x.family === 'IPv4' && !x.internal)[0]) // eslint-disable-line no-shadow
+    .filter((x) => x)[0].address;
+};
 
 export const verifyToken = (req, res, next) => {
   const token = req.headers['x-access-token'];
@@ -26,10 +34,10 @@ export const sendActivationCode = async (user) => {
   });
 };
 
-export const sendRecoveryLink = async (user, appURL) => {
+export const sendRecoveryLink = async (user, appURL, serverURL) => {
   const recoveryHash = cryptoRandomString({ length: 12, type: 'url-safe' });
   await User.findByIdAndUpdate(user._id, { recoveryHash });
-  const link = `http://192.168.0.100:3000/password_recovery?recoveryHash=${recoveryHash}&appURL=${appURL}`
+  const link = `${serverURL}/password_recovery?recoveryHash=${recoveryHash}&appURL=${appURL}`;
   await sendMail(user.email, {
     subject: 'Messenger: Password Recovery',
     html: `<a href="${link}"><span>Follow this link</span></a>`,

@@ -6,7 +6,7 @@ import { activateAccount, getActivationCode } from '../../store/actions/auth';
 const mapStateToProps = ({ Auth, Snack }) => ({ Auth, Snack });
 const mapDispatchToProps = (dispatch) => ({
   changeAuthState: (payload) => dispatch(changeStoreState('CHANGE_AUTH_STATE', payload)),
-  activateAccount: navigation => dispatch(activateAccount(navigation)),
+  activateAccount: (navigation) => dispatch(activateAccount(navigation)),
   getActivationCode: () => dispatch(getActivationCode())
 });
 

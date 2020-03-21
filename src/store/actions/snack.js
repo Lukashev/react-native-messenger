@@ -1,19 +1,18 @@
-import { changeStoreState } from ".."
+import { changeStoreState } from '..';
 
-export const closeSnack = (time = 2000, callback) => dispatch => {
+export const closeSnack = (time = 2000, callback) => (dispatch) => {
   setTimeout(() => {
     dispatch(changeStoreState('CHANGE_SNACK_STATE', {
       visible: false,
       message: null
-    }))
-    callback()
-  }, time)
-}
+    }));
+    callback();
+  }, time);
+};
 
-const triggerSnack = (message, { time, callback = () => {}, type = 'success' } = {}) => dispatch => {
-  console.log(type)
-  dispatch(changeStoreState('CHANGE_SNACK_STATE', { visible: true, message, type }))
-  dispatch(closeSnack(time, callback))
-}
+const triggerSnack = (message, { time, callback = () => {}, type = 'success' } = {}) => (dispatch) => {
+  dispatch(changeStoreState('CHANGE_SNACK_STATE', { visible: true, message, type }));
+  dispatch(closeSnack(time, callback));
+};
 
-export default triggerSnack
+export default triggerSnack;
