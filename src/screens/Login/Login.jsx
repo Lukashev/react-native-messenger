@@ -3,6 +3,7 @@ import { KeyboardAvoidingView, View, StyleSheet } from 'react-native'
 import isEmpty from 'validator/lib/isEmpty'
 import * as SecureStore from 'expo-secure-store'
 import styled from 'styled-components'
+import SnackbarComponent from 'react-native-snackbar-component'
 /* COMPONENTS */
 import TextField from '../../components/TextField'
 import Button from '../../components/Button'
@@ -10,7 +11,7 @@ import { Switch } from 'react-native-gesture-handler'
 import Typography from '../../components/Typography'
 import { colors } from '../../theme'
 import { redirect, changeAuthState } from '../../utils'
-import SnackbarComponent from 'react-native-snackbar-component'
+import * as RootNavigation from '../../RootNavigation'
 
 export const Container = styled(KeyboardAvoidingView)`
     flex: 1;
@@ -70,10 +71,15 @@ class Login extends Component {
 	}
 
 	componentDidMount() {
-		/* SecureStore.getItemAsync('token')
+		SecureStore.getItemAsync('token')
 			.then(token => {
-				console.log(token)
-			}) */
+				if (token)  {
+					 const { navigate, resetRouteStack } = RootNavigation	
+					 resetRouteStack('Profile')
+					 navigate('Profile')
+				}
+			})
+			.catch(console.error)
 	}
 
 	onSubmit = async () => {
