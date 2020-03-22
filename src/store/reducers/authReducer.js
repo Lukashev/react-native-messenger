@@ -3,6 +3,7 @@ const INITIAL_STATE = {
   password: '',
   retypedPassword: '',
   isAuthenticated: false,
+  token: null,
   rememberMe: false,
   recoveryLinkSent: false,
   activationCode: '',

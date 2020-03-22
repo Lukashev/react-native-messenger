@@ -8,7 +8,6 @@ import Login from './src/screens/Login';
 import SignUp from './src/screens/SignUp';
 import PasswordRecovery from './src/screens/PasswordRecovery';
 import AccountActivation from './src/screens/AccountActivation';
-import Profile from './src/screens/Profile';
 import initDeepLinking from './src/deeplinking';
 import { navigationRef, isMountedRef } from './src/RootNavigation';
 import store, { changeStoreState } from './src/store';
@@ -30,6 +29,7 @@ import ChatScreen from './src/screens/Chat';
 import ProfileEditorScreen from './src/screens/ProfileEditor';
 import SettingsScreen from './src/screens/Settings';
 import SettingsIcon from './src/icons/SettingsIcon';
+import { getMe } from './src/store/actions/profile';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -97,6 +97,9 @@ function MainStack() {
         },
         labelStyle: {
           color: colors['secondary'],
+        },
+        style: {
+          backgroundColor: colors['primary']
         }
       }
       }>
@@ -110,11 +113,10 @@ function MainStack() {
           tabBarLabel: ({ focused }) => {
             return (
               <Typography
-              style={{ 
-                fontSize: 10, 
-                color: focused ? colors['background'] : colors['secondary'],
-                marginBottom: 2 
-              }}
+                style={{
+                  fontSize: 10,
+                  color: focused ? colors['background'] : colors['secondary'],
+                }}
               >Profile</Typography>
             )
           }
@@ -132,11 +134,10 @@ function MainStack() {
           tabBarLabel: ({ focused }) => {
             return (
               <Typography
-              style={{ 
-                fontSize: 10, 
-                color: focused ? colors['background'] : colors['secondary'],
-                marginBottom: 2 
-              }}
+                style={{
+                  fontSize: 10,
+                  color: focused ? colors['background'] : colors['secondary'],
+                }}
               >Explore</Typography>
             )
           }
@@ -154,11 +155,10 @@ function MainStack() {
           tabBarLabel: ({ focused }) => {
             return (
               <Typography
-              style={{ 
-                fontSize: 10, 
-                color: focused ? colors['background'] : colors['secondary'],
-                marginBottom: 2 
-              }}
+                style={{
+                  fontSize: 10,
+                  color: focused ? colors['background'] : colors['secondary'],
+                }}
               >Chat</Typography>
             )
           }
@@ -166,7 +166,7 @@ function MainStack() {
         name="Chat"
         component={ChatStackScreen}
       />
-       <Tab.Screen
+      <Tab.Screen
         options={{
           tabBarIcon: ({ focused }) => {
             return <SettingsIcon
@@ -176,11 +176,10 @@ function MainStack() {
           tabBarLabel: ({ focused }) => {
             return (
               <Typography
-              style={{ 
-                fontSize: 10, 
-                color: focused ? colors['background'] : colors['secondary'],
-                marginBottom: 2 
-              }}
+                style={{
+                  fontSize: 10,
+                  color: focused ? colors['background'] : colors['secondary'],
+                }}
               >Settings</Typography>
             )
           }
@@ -195,7 +194,8 @@ function MainStack() {
 function App({
   isAuthenticated,
   triggerSnack,
-  changeAuthState
+  changeAuthState,
+  getMe
 }) {
   const [fontLoaded, setFontLoadingState] = React.useState(false);
 
@@ -203,11 +203,14 @@ function App({
     isMountedRef.current = true;
 
     SecureStore.getItemAsync('token')
-      .then(token => {
-        if (token)
+      .then(async token => {
+        if (token) {
           changeAuthState({
-            isAuthenticated: true
+            isAuthenticated: true,
+            token
           })
+          await getMe()
+        }
       })
       .catch(e => triggerSnack(e.message))
 
@@ -257,6 +260,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  getMe: () => dispatch(getMe()),
+  changeMainState: payload => dispatch(changeStoreState('CHANGE_MAIN_STATE', payload)),
   changeAuthState: payload => dispatch(changeStoreState('CHANGE_AUTH_STATE', payload)),
   triggerSnack: message => dispatch(triggerSnack(message))
 })

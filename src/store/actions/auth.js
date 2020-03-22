@@ -1,5 +1,4 @@
 import { API_URL } from 'react-native-dotenv';
-import { Na } from '@react-navigation/native';
 import * as SecureStore from 'expo-secure-store';
 import { Linking } from 'expo';
 /* Validators */
