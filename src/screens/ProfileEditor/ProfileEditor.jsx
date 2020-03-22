@@ -102,7 +102,7 @@ class ProfileEditor extends Component {
             numberOfLines={6}
             inputStyle={{ paddingTop: 10 }}
             onFocus={event => {
-              this.scroll?.scrollToEnd({ animated: true })
+              this.scroll?.scrollTo({ x: 0, y: event.target * 4, animated: true })
             }
             }
           />
