@@ -7,9 +7,9 @@ import Typography from './Typography'
 import { colors } from '../theme'
 import Button from './Button'
 
-const Container = styled(ScrollView)`
+export const Container = styled(ScrollView)`
   flex: 1;
-  padding: 30px 0;
+  padding: 25px 0;
 `
 
 const ProfileTitle = styled(Typography)`

@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { KeyboardAvoidingView, View, StyleSheet } from 'react-native'
 import isEmpty from 'validator/lib/isEmpty'
-import * as SecureStore from 'expo-secure-store'
 import styled from 'styled-components'
 import SnackbarComponent from 'react-native-snackbar-component'
 /* COMPONENTS */
@@ -11,7 +10,6 @@ import { Switch } from 'react-native-gesture-handler'
 import Typography from '../../components/Typography'
 import { colors } from '../../theme'
 import { redirect, changeAuthState } from '../../utils'
-import * as RootNavigation from '../../RootNavigation'
 
 export const Container = styled(KeyboardAvoidingView)`
     flex: 1;

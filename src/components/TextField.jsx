@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback } from 'react'
-import { string, objectOf, any, bool, func } from 'prop-types'
-import { TextInput, View, TouchableOpacity } from 'react-native'
+import { string, objectOf, any, bool, func, number } from 'prop-types'
+import { TextInput, View, TouchableOpacity, Platform } from 'react-native'
 import styled from 'styled-components'
 import Typography from './Typography'
 import EyeIcon from '../icons/EyeIcon'
@@ -21,7 +21,9 @@ const StyledTextInput = styled(TextInput)`
     background: #FFFFFF;
     border: 2px solid ${colors['primary']};
     border-radius: 10px;
-    height: 40px;
+    min-height: ${({ numberOfLines }) => (Platform.OS === 'ios' && numberOfLines) 
+        ? `${(20 * numberOfLines)}px`
+        : `${40}px`};
     padding: 0 15px;
 `
 
@@ -29,21 +31,21 @@ const TouchableEye = styled(TouchableOpacity)`
     position: absolute;
     right: 10px;
     top: 40px;
-` 
+`
 
 const TextField = (props) => {
 
     const [secureTextEntry, setSecureTextEntry] = useState(true)
-    const { secureEnabled } = props 
+    const { secureEnabled } = props
 
     const changeSecureTextState = useCallback(() => setSecureTextEntry(!!!secureTextEntry), [secureTextEntry])
 
     const eyeIcon = useMemo(() => {
-        return secureEnabled 
-        ? <TouchableEye onPress={changeSecureTextState} s>
-            {secureTextEntry ? <HiddenEyeIcon />  : <EyeIcon /> } 
-        </TouchableEye>
-        : null
+        return secureEnabled
+            ? <TouchableEye onPress={changeSecureTextState} s>
+                {secureTextEntry ? <HiddenEyeIcon /> : <EyeIcon />}
+            </TouchableEye>
+            : null
     }, [secureTextEntry])
 
     const {
@@ -52,7 +54,10 @@ const TextField = (props) => {
         style,
         inputStyle,
         labelStyle,
-        onChangeText = () => {}
+        onChangeText = () => { },
+        keyboardType,
+        multiline,
+        numberOfLines
     } = props
     return (
         <Container style={style}>
@@ -62,6 +67,9 @@ const TextField = (props) => {
                 value={value}
                 secureTextEntry={secureEnabled ? secureTextEntry : false}
                 onChangeText={onChangeText}
+                keyboardType={keyboardType}
+                multiline={multiline}
+                numberOfLines={numberOfLines}
             />
             {eyeIcon}
         </Container>
@@ -71,16 +79,22 @@ const TextField = (props) => {
 TextField.propTypes = {
     label: string.isRequired,
     value: string.isRequired,
-    onChangeText: func.isRequired, 
+    onChangeText: func.isRequired,
     inputStyle: objectOf(any),
     labelStyle: objectOf(any),
-    secureEnabled: bool
+    secureEnabled: bool,
+    keyboardType: string,
+    multiline: bool,
+    numberOfLines: number
 }
 
 TextField.defaultProps = {
     inputStyle: {},
     labelStyle: {},
-    secureEnabled: false
+    secureEnabled: false,
+    keyboardType: 'default',
+    multiline: false,
+    numberOfLines: null
 }
 
 export default TextField
