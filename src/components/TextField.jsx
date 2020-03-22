@@ -21,7 +21,7 @@ const StyledTextInput = styled(TextInput)`
     background: #FFFFFF;
     border: 2px solid ${colors['primary']};
     border-radius: 10px;
-    min-height: ${({ numberOfLines }) => (Platform.OS === 'ios' && numberOfLines) 
+    height: ${({ numberOfLines }) => (Platform.OS === 'ios' && numberOfLines) 
         ? `${(20 * numberOfLines)}px`
         : `${40}px`};
     padding: 0 15px;
@@ -34,6 +34,8 @@ const TouchableEye = styled(TouchableOpacity)`
 `
 
 const TextField = (props) => {
+
+    const inputRef = React.createRef()
 
     const [secureTextEntry, setSecureTextEntry] = useState(true)
     const { secureEnabled } = props
@@ -57,12 +59,15 @@ const TextField = (props) => {
         onChangeText = () => { },
         keyboardType,
         multiline,
-        numberOfLines
+        numberOfLines,
+        onContentSizeChange,
+        onFocus
     } = props
     return (
         <Container style={style}>
             <Label style={labelStyle}>{label}</Label>
             <StyledTextInput
+                ref={inputRef}
                 style={inputStyle}
                 value={value}
                 secureTextEntry={secureEnabled ? secureTextEntry : false}
@@ -70,6 +75,10 @@ const TextField = (props) => {
                 keyboardType={keyboardType}
                 multiline={multiline}
                 numberOfLines={numberOfLines}
+                onContentSizeChange={onContentSizeChange}
+                onFocus={event => { 
+                    onFocus(event, inputRef) 
+                }}
             />
             {eyeIcon}
         </Container>
@@ -85,7 +94,9 @@ TextField.propTypes = {
     secureEnabled: bool,
     keyboardType: string,
     multiline: bool,
-    numberOfLines: number
+    numberOfLines: number,
+    onContentSizeChange: func,
+    onFocus: func
 }
 
 TextField.defaultProps = {
@@ -94,7 +105,9 @@ TextField.defaultProps = {
     secureEnabled: false,
     keyboardType: 'default',
     multiline: false,
-    numberOfLines: null
+    numberOfLines: null,
+    onContentSizeChange: () => {},
+    onFocus: () => {}
 }
 
 export default TextField
