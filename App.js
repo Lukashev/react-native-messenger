@@ -41,7 +41,7 @@ const SettingsStack = createStackNavigator();
 
 function ProfileStackScreen() {
   return (
-    <ProfileStack.Navigator {...stackOptions} initialRouteName='Profile Details'>
+    <ProfileStack.Navigator {...stackOptions}>
       <ProfileStack.Screen
         name='Profile Details'
         component={ProfileScreen}

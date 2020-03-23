@@ -6,7 +6,7 @@ const profileSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: 'User' },
   name: String,
   age: Number,
-  location: {},
+  location: String,
   description: String,
   avatar: String
 });

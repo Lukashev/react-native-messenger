@@ -1,5 +1,6 @@
 import express from 'express';
 import AuthController from './controllers/AuthController';
+import ProfileController from './controllers/ProfileController';
 import './db';
 
 const app = express();
@@ -14,5 +15,6 @@ app.get('/password_recovery', (req, res) => {
 });
 
 app.use('/api/auth', AuthController);
+app.use('/api/profile', ProfileController)
 
 export default app;

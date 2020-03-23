@@ -3,32 +3,34 @@ import SaveIcon from '../../icons/SaveIcon'
 import { ProfileHeader } from '../Profile/Profile'
 import { colors } from '../../theme'
 import Avatar from '../../components/Avatar'
-import { View, TouchableOpacity, Platform, Modal, SafeAreaView } from 'react-native'
+import Modal, { ModalContent, SlideAnimation } from 'react-native-modals';
+import { View, TouchableOpacity, Dimensions } from 'react-native'
 import styled from 'styled-components'
 import TextField from '../../components/TextField'
 import LocationPicker from '../../components/LocationPicker'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
 import Typography from '../../components/Typography'
+import Button from '../../components/Button'
+import SnackbarComponent from 'react-native-snackbar-component'
 
 export const MainContainer = styled(View)`
   flex: 1;
   padding: 25px 20px;
-  backgroundColor: ${colors['background']}
+  backgroundColor: ${colors['background']};
+  align-self: stretch;
 `
 
 const StyledTextField = styled(TextField)`
   align-self: stretch;
   margin: 5px 0;
 `
-const ModalOverlay = styled(SafeAreaView)`
-  flex: 1;
-  background-color: ${colors['primary']};
+
+const StyledButton = styled(Button)`
+  margin: 16px 0;
 `
 
-const ModalTitle = styled(Typography)`
-  color: ${colors['primary']}
-  padding: 0 0 10px 0;
-`
+const modalWidth = Dimensions.get('window').width - 25,
+  modalHeight = Dimensions.get('window').height / 1.5
 
 class ProfileEditor extends Component {
 
@@ -38,7 +40,8 @@ class ProfileEditor extends Component {
     super(props)
     this.state = {
       profile: {},
-      multilineLayout: null
+      multilineLayout: null,
+      modalVisible: false
     }
   }
 
@@ -50,10 +53,19 @@ class ProfileEditor extends Component {
     }))
   }
 
+  handleModalState = () => {
+    const { modalVisible } = this.state
+    this.setState(state => ({
+      ...state,
+      modalVisible: !modalVisible
+    }))
+  }
+
   handleChange = key => value => {
     this.setState(state => ({
       ...state,
       profile: {
+        ...state.profile,
         [key]: value
       }
     }))
@@ -68,6 +80,15 @@ class ProfileEditor extends Component {
       }))
   }
 
+  handlePickerChange = ({ description }) => {
+    this.handleChange('location')(description)
+  }
+
+  save = () => {
+    const { profile } = this.state
+    this.props.save(profile)
+  }
+
   render() {
     const {
       profile: {
@@ -76,17 +97,30 @@ class ProfileEditor extends Component {
         age = '',
         location = '',
         description = ''
-      }
+      },
+      multilineLayout,
+      modalVisible
     } = this.state
+
+    const { Snack: { visible, message, type } } = this.props
 
     return (
       <MainContainer>
+        <SnackbarComponent
+          visible={visible}
+          textMessage={message}
+          backgroundColor={colors[type]}
+          messageColor={colors['secondary']}
+          position='top'
+          actionText={null}
+        />
         <ProfileHeader style={{ justifyContent: 'flex-end' }}>
-          <SaveIcon fill={colors['primary']} />
+          <TouchableOpacity onPress={this.save}>
+            <SaveIcon fill={colors['primary']} />
+          </TouchableOpacity>
         </ProfileHeader>
         <KeyboardAwareScrollView
           enableOnAndroid
-          enableAutomaticScroll={(Platform.OS === 'ios')}
           contentContainerStyle={{
             backgroundColor: colors['background'],
             flex: 1,
@@ -95,7 +129,6 @@ class ProfileEditor extends Component {
           ref={ref => {
             this.scroll = ref;
           }}
-          extraHeight={200}
           resetScrollToCoords={{ x: 0, y: 0 }}
         >
           <TouchableOpacity>
@@ -107,15 +140,9 @@ class ProfileEditor extends Component {
             value={name}
           />
           <StyledTextField
-            label={'Location'}
-            value={age}
-            onChangeText={this.handleChange('location')}
-            editable={false}
-          />
-          <StyledTextField
             label={'Age'}
             onChangeText={this.handleChange('age')}
-            value={age}
+            value={age.toString()}
             keyboardType={'numeric'}
           />
           <StyledTextField
@@ -127,24 +154,37 @@ class ProfileEditor extends Component {
             inputStyle={{ paddingTop: 10 }}
             onLayout={this.getLayout}
             onFocus={() => {
-              const { multilineLayout } = this.state
               const y = multilineLayout?.y + multilineLayout.height
               this.scroll?.scrollTo({ x: 0, y: y * 1.5, animated: true })
             }
             }
           />
+          <StyledButton onPress={this.handleModalState}>
+            Location
+        </StyledButton>
         </KeyboardAwareScrollView>
         <Modal
-          visible={true}
-          transparent
-          animationType={'fade'}
+          visible={modalVisible}
+          onTouchOutside={this.handleModalState}
+          modalAnimation={new SlideAnimation({
+            slideFrom: 'bottom',
+          })}
+          width={modalWidth}
+          height={modalHeight}
+          modalStyle={{
+            borderWidth: 2,
+            borderColor: colors['primary']
+          }}
         >
-          <ModalOverlay >
-            <MainContainer>
-              <ModalTitle>Location</ModalTitle>
-              <LocationPicker />
-            </MainContainer>
-          </ModalOverlay>
+          <ModalContent style={{
+            flex: 1,
+            backgroundColor: colors['background']
+          }}>
+            <LocationPicker
+              onPress={this.handlePickerChange}
+              placeholder={location}
+            />
+          </ModalContent>
         </Modal>
       </MainContainer>
     )

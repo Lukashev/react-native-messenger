@@ -18,7 +18,11 @@ export const verifyToken = (req, res, next) => {
   if (!token) { return res.status(403).send({ result: null, message: 'No token provided' }); }
 
   jwt.verify(token, config.JWT_SECRET, (err, decoded) => {
-    if (err) { return res.status(500).send({ result: null, message: 'Failed to authenticate token' }); }
+    if (err) { return res.status(500).send({ 
+      result: null, 
+      message: 'Failed to authenticate token', 
+      sessionExpired: true
+    }); }
 
     req.userId = decoded.id;
     next();

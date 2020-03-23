@@ -3,8 +3,8 @@ import { PLACES_API_KEY } from 'react-native-dotenv'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { colors } from '../theme';
 
-const LocationPicker = () => {
-
+const LocationPicker = (props) => {
+  const { onPress, placeholder = 'Search' } = props
   return (
     <GooglePlacesAutocomplete
       minLength={2}
@@ -12,6 +12,7 @@ const LocationPicker = () => {
         key: PLACES_API_KEY,
         language: 'en'
       }}
+      nearbyPlacesAPI='GooglePlacesSearch'
       styles={{
         textInputContainer: {
           width: '100%',
@@ -33,6 +34,8 @@ const LocationPicker = () => {
           color: colors['primary']
         }
       }}
+      onPress={onPress}
+      placeholder={placeholder}
       enablePoweredByContainer={false}
       debounce={200}
       fetchDetails

@@ -34,6 +34,9 @@ class Profile extends Component {
         visible,
         message,
         type
+      },
+      Main: {
+        profile
       }
     } = this.props
     return (
@@ -56,7 +59,7 @@ class Profile extends Component {
             onPress={this.toProfileEditor}
           />
         </ProfileHeader>
-        <ProfilePreview />
+        <ProfilePreview profile={profile} />
       </MainContainer>
     )
   }
