@@ -61,7 +61,9 @@ const TextField = (props) => {
         multiline,
         numberOfLines,
         onContentSizeChange,
-        onFocus
+        onFocus,
+        onLayout,
+        editable
     } = props
     return (
         <Container style={style}>
@@ -79,6 +81,8 @@ const TextField = (props) => {
                 onFocus={event => { 
                     onFocus(event, inputRef) 
                 }}
+                onLayout={onLayout}
+                editable={editable}
             />
             {eyeIcon}
         </Container>
@@ -96,7 +100,9 @@ TextField.propTypes = {
     multiline: bool,
     numberOfLines: number,
     onContentSizeChange: func,
-    onFocus: func
+    onFocus: func,
+    onLayout: func,
+    editable: bool
 }
 
 TextField.defaultProps = {
@@ -107,7 +113,9 @@ TextField.defaultProps = {
     multiline: false,
     numberOfLines: null,
     onContentSizeChange: () => {},
-    onFocus: () => {}
+    onFocus: () => {},
+    onLayout: () => {},
+    editable: true
 }
 
 export default TextField

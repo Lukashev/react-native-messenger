@@ -3,10 +3,12 @@ import SaveIcon from '../../icons/SaveIcon'
 import { ProfileHeader } from '../Profile/Profile'
 import { colors } from '../../theme'
 import Avatar from '../../components/Avatar'
-import { View, TouchableOpacity, findNodeHandle, Platform } from 'react-native'
+import { View, TouchableOpacity, Platform, Modal, SafeAreaView } from 'react-native'
 import styled from 'styled-components'
 import TextField from '../../components/TextField'
+import LocationPicker from '../../components/LocationPicker'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
+import Typography from '../../components/Typography'
 
 export const MainContainer = styled(View)`
   flex: 1;
@@ -18,6 +20,15 @@ const StyledTextField = styled(TextField)`
   align-self: stretch;
   margin: 5px 0;
 `
+const ModalOverlay = styled(SafeAreaView)`
+  flex: 1;
+  background-color: ${colors['primary']};
+`
+
+const ModalTitle = styled(Typography)`
+  color: ${colors['primary']}
+  padding: 0 0 10px 0;
+`
 
 class ProfileEditor extends Component {
 
@@ -25,7 +36,10 @@ class ProfileEditor extends Component {
 
   constructor(props) {
     super(props)
-    this.state = { profile: {} }
+    this.state = {
+      profile: {},
+      multilineLayout: null
+    }
   }
 
   componentDidMount() {
@@ -43,6 +57,15 @@ class ProfileEditor extends Component {
         [key]: value
       }
     }))
+  }
+
+  getLayout = ({ nativeEvent }) => {
+    const { multilineLayout } = this.state
+    if (!multilineLayout)
+      this.setState(state => ({
+        ...state,
+        multilineLayout: nativeEvent.layout
+      }))
   }
 
   render() {
@@ -85,8 +108,9 @@ class ProfileEditor extends Component {
           />
           <StyledTextField
             label={'Location'}
+            value={age}
             onChangeText={this.handleChange('location')}
-            value={location}
+            editable={false}
           />
           <StyledTextField
             label={'Age'}
@@ -101,12 +125,27 @@ class ProfileEditor extends Component {
             multiline
             numberOfLines={6}
             inputStyle={{ paddingTop: 10 }}
-            onFocus={event => {
-              this.scroll?.scrollTo({ x: 0, y: event.target * 4, animated: true })
+            onLayout={this.getLayout}
+            onFocus={() => {
+              const { multilineLayout } = this.state
+              const y = multilineLayout?.y + multilineLayout.height
+              this.scroll?.scrollTo({ x: 0, y: y * 1.5, animated: true })
             }
             }
           />
         </KeyboardAwareScrollView>
+        <Modal
+          visible={true}
+          transparent
+          animationType={'fade'}
+        >
+          <ModalOverlay >
+            <MainContainer>
+              <ModalTitle>Location</ModalTitle>
+              <LocationPicker />
+            </MainContainer>
+          </ModalOverlay>
+        </Modal>
       </MainContainer>
     )
   }
