@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import isEmpty from 'validator/lib/isEmpty'
 import { View } from 'react-native'
 import styled from 'styled-components'
 import { colors } from '../../theme'
@@ -11,7 +10,7 @@ import EditIcon from '../../icons/EditIcon'
 export const MainContainer = styled(View)`
   flex: 1;
   background-color: ${colors['background']};
-  padding: 25px 20px;
+  padding: 25px 0 0 0;
 `
 
 export const ProfileHeader = styled(View)`
@@ -19,6 +18,7 @@ export const ProfileHeader = styled(View)`
   justify-content: space-between;
   align-items: center;
   align-self: stretch;
+  margin: 0 20px;
 `
 
 class Profile extends Component {

@@ -26,7 +26,7 @@ const ProfileLocation = styled(Typography)`
 
 const ProfileDescription = styled(Typography)`
   color: ${colors['textDefault']};
-  padding: 25px 0 6px 0;
+  padding: 25px 20px 6px 20px;
   line-height: 28px;
 `
 
@@ -50,7 +50,7 @@ const ProfilePreview = (props) => {
     }
   } = props
   return (
-    <Container contentContainerStyle={{ alignItems: 'center' }}>
+    <Container contentContainerStyle={{ alignItems: 'center', paddingBottom: 20 }}>
       <Avatar size={200} uri={avatar} />
       <ProfileTitle>{name}, {age}</ProfileTitle>
       <ProfileLocation>{location}</ProfileLocation>

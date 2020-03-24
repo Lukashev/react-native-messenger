@@ -4,8 +4,8 @@ import SaveIcon from '../../icons/SaveIcon'
 import { ProfileHeader } from '../Profile/Profile'
 import { colors } from '../../theme'
 import Avatar from '../../components/Avatar'
-import Modal, { ModalContent, SlideAnimation, ModalTitle, ModalFooter } from 'react-native-modals';
-import { View, TouchableOpacity, Dimensions } from 'react-native'
+import Modal, { ModalContent, SlideAnimation, ModalTitle } from 'react-native-modals';
+import { View, TouchableOpacity, Dimensions, Platform } from 'react-native'
 import styled from 'styled-components'
 import TextField from '../../components/TextField'
 import LocationPicker from '../../components/LocationPicker'
@@ -16,18 +16,18 @@ import ImageUploader from '../../components/ImageUploader'
 
 export const MainContainer = styled(View)`
   flex: 1;
-  padding: 25px 20px;
+  padding: 25px 0 0 0;
   backgroundColor: ${colors['background']};
   align-self: stretch;
 `
 
 const StyledTextField = styled(TextField)`
   align-self: stretch;
-  margin: 5px 0;
+  margin: 5px 20px;
 `
 
 const StyledButton = styled(Button)`
-  margin: 16px 0;
+  margin: 16px 20px;
 `
 
 const Flex = styled(View)`
@@ -109,7 +109,6 @@ class ProfileEditor extends Component {
   }
 
   getPublicURL = url => {
-    console.log('PUBLIC_URL', url)
     const { changeStoreState, Main: { profile } } = this.props
     changeStoreState('CHANGE_MAIN_STATE', {
       profile: {
@@ -150,11 +149,13 @@ class ProfileEditor extends Component {
       modalVisible
     } = this.state
 
-    const { 
-      Snack: { visible, message, type }, 
+    const {
+      Snack: { visible, message, type },
       triggerSnack,
-      Main: { profile } 
+      Main: { profile }
     } = this.props
+
+    const flexProps = Platform.OS === 'ios' ? { flex: 1 } : { flexGrow: 1 }
 
     return (
       <MainContainer>
@@ -173,8 +174,8 @@ class ProfileEditor extends Component {
           enableOnAndroid
           contentContainerStyle={{
             backgroundColor: colors['background'],
-            flex: 1,
-            alignItems: 'center'
+            alignItems: 'center',
+            ...flexProps
           }}
           ref={ref => {
             this.scroll = ref;
@@ -215,6 +216,7 @@ class ProfileEditor extends Component {
         </StyledButton>
             <ImageUploader
               btnText={'AVATAR'}
+              btnStyle={{ marginRight: 20 }}
               handleUpload={this.uploadAvatarAsync}
               getPublicURL={this.getPublicURL}
               triggerSnack={triggerSnack}

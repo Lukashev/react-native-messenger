@@ -21,7 +21,7 @@ const StyledTextInput = styled(TextInput)`
     background: #FFFFFF;
     border: 2px solid ${colors['primary']};
     border-radius: 10px;
-    height: ${({ numberOfLines }) => (Platform.OS === 'ios' && numberOfLines) 
+    min-height: ${({ numberOfLines }) => (Platform.OS === 'ios' && numberOfLines) 
         ? `${(20 * numberOfLines)}px`
         : `${40}px`};
     padding: 0 15px;
