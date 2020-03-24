@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import isEmpty from 'validator/lib/isEmpty'
 import { View } from 'react-native'
 import styled from 'styled-components'
 import { colors } from '../../theme'
@@ -22,9 +23,15 @@ export const ProfileHeader = styled(View)`
 
 class Profile extends Component {
 
+  componentDidMount() {
+    const { Main: { profile } } = this.props
+    if (Object.keys(profile).length === 0) 
+      this.props.getMe()
+  }
+
   toProfileEditor = () => {
     const { navigation } = this.props
-    navigation.navigate('Profile Editor') 
+    navigation.navigate('Profile Editor')
   }
 
   render() {

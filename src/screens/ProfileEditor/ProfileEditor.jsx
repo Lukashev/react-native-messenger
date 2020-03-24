@@ -1,17 +1,18 @@
 import React, { Component } from 'react'
+import { API_URL } from 'react-native-dotenv'
 import SaveIcon from '../../icons/SaveIcon'
 import { ProfileHeader } from '../Profile/Profile'
 import { colors } from '../../theme'
 import Avatar from '../../components/Avatar'
-import Modal, { ModalContent, SlideAnimation } from 'react-native-modals';
+import Modal, { ModalContent, SlideAnimation, ModalTitle, ModalFooter } from 'react-native-modals';
 import { View, TouchableOpacity, Dimensions } from 'react-native'
 import styled from 'styled-components'
 import TextField from '../../components/TextField'
 import LocationPicker from '../../components/LocationPicker'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
-import Typography from '../../components/Typography'
 import Button from '../../components/Button'
 import SnackbarComponent from 'react-native-snackbar-component'
+import ImageUploader from '../../components/ImageUploader'
 
 export const MainContainer = styled(View)`
   flex: 1;
@@ -29,8 +30,14 @@ const StyledButton = styled(Button)`
   margin: 16px 0;
 `
 
-const modalWidth = Dimensions.get('window').width - 25,
-  modalHeight = Dimensions.get('window').height / 1.5
+const Flex = styled(View)`
+  align-self: stretch;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`
+
+const modalWidth = Dimensions.get('window').width - 25
 
 class ProfileEditor extends Component {
 
@@ -71,6 +78,48 @@ class ProfileEditor extends Component {
     }))
   }
 
+  uploadAvatarAsync = uri => {
+    const { Auth: { token }, Main: { profile } } = this.props
+
+    let apiUrl = `${API_URL}/profile/avatar-upload`;
+
+    let uriParts = uri.split('.');
+    let fileType = uriParts[uriParts.length - 1];
+
+    let formData = new FormData();
+    formData.append('photo', {
+      uri,
+      name: `photo.${fileType}`,
+      type: `image/${fileType}`,
+    });
+
+    formData.append('profileId', profile._id)
+
+    let options = {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+        'x-access-token': token
+      },
+    };
+
+    return fetch(apiUrl, options);
+  }
+
+  getPublicURL = url => {
+    console.log('PUBLIC_URL', url)
+    const { changeStoreState, Main: { profile } } = this.props
+    changeStoreState('CHANGE_MAIN_STATE', {
+      profile: {
+        ...profile,
+        avatar: url
+      }
+    })
+    this.handleChange('avatar', url)
+  }
+
   getLayout = ({ nativeEvent }) => {
     const { multilineLayout } = this.state
     if (!multilineLayout)
@@ -92,7 +141,6 @@ class ProfileEditor extends Component {
   render() {
     const {
       profile: {
-        avatar,
         name = '',
         age = '',
         location = '',
@@ -102,7 +150,11 @@ class ProfileEditor extends Component {
       modalVisible
     } = this.state
 
-    const { Snack: { visible, message, type } } = this.props
+    const { 
+      Snack: { visible, message, type }, 
+      triggerSnack,
+      Main: { profile } 
+    } = this.props
 
     return (
       <MainContainer>
@@ -115,9 +167,7 @@ class ProfileEditor extends Component {
           actionText={null}
         />
         <ProfileHeader style={{ justifyContent: 'flex-end' }}>
-          <TouchableOpacity onPress={this.save}>
-            <SaveIcon fill={colors['primary']} />
-          </TouchableOpacity>
+          <SaveIcon fill={colors['primary']} onPress={this.save} />
         </ProfileHeader>
         <KeyboardAwareScrollView
           enableOnAndroid
@@ -132,7 +182,7 @@ class ProfileEditor extends Component {
           resetScrollToCoords={{ x: 0, y: 0 }}
         >
           <TouchableOpacity>
-            <Avatar size={200} uri={avatar} />
+            <Avatar size={200} uri={profile.avatar} />
           </TouchableOpacity>
           <StyledTextField
             label={'Name'}
@@ -159,9 +209,17 @@ class ProfileEditor extends Component {
             }
             }
           />
-          <StyledButton onPress={this.handleModalState}>
-            Location
+          <Flex>
+            <StyledButton onPress={this.handleModalState}>
+              LOCATION
         </StyledButton>
+            <ImageUploader
+              btnText={'AVATAR'}
+              handleUpload={this.uploadAvatarAsync}
+              getPublicURL={this.getPublicURL}
+              triggerSnack={triggerSnack}
+            />
+          </Flex>
         </KeyboardAwareScrollView>
         <Modal
           visible={modalVisible}
@@ -170,20 +228,36 @@ class ProfileEditor extends Component {
             slideFrom: 'bottom',
           })}
           width={modalWidth}
-          height={modalHeight}
+          height={0.5}
           modalStyle={{
             borderWidth: 2,
             borderColor: colors['primary']
           }}
         >
+          <ModalTitle
+            title={'Location Picker'}
+            style={{
+              backgroundColor: colors['primary']
+            }}
+            textStyle={{
+              color: colors['secondary'],
+              fontFamily: 'montserrat-bold',
+              fontSize: 18
+            }}
+          />
           <ModalContent style={{
             flex: 1,
-            backgroundColor: colors['background']
+            backgroundColor: colors['background'],
+            justifyContent: 'center',
+            alignItems: 'center'
           }}>
             <LocationPicker
               onPress={this.handlePickerChange}
               placeholder={location}
             />
+            <Button onPress={this.handleModalState}>
+              Cancel
+              </Button>
           </ModalContent>
         </Modal>
       </MainContainer>

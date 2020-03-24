@@ -2,6 +2,7 @@ node_modules/**/*
 backend/node_modules/**/*
 backend/.env
 backend/example.http
+backend/service-account.json
 .expo/*
 npm-debug.*
 *.jks
